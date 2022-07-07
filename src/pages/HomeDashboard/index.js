@@ -17,12 +17,11 @@ import ButtonGreen from '../../components/button-green';
 import map from './../../assets/Icon/Maps.png';
 import ButtonWhite from '../../components/button-white';
 import ArtikelList from '../../components/card-list-artikel';
-import {useNavigation} from '@react-navigation/native';
 import {getAllProducts} from '../../redux/actions';
 import {useDispatch, useSelector} from 'react-redux';
+import cilok from '../../assets/image/cilok.jpg';
 
-const HomeDashboard = () => {
-  const nav = useNavigation();
+const HomeDashboard = ({navigation}) => {
   const allProduct = useSelector(state => state.productReducer.listProduct);
   const dispatch = useDispatch();
 
@@ -92,7 +91,7 @@ const HomeDashboard = () => {
                 height: 220,
               }}
               showsHorizontalScrollIndicator={false}>
-              {allProduct.map(val => {
+              {/* {allProduct.map(val => {
                 return (
                   <CardProduct
                     key={val.id}
@@ -102,7 +101,37 @@ const HomeDashboard = () => {
                     idP={val.id}
                   />
                 );
-              })}
+              })} */}
+              <CardProduct
+                produkNama={'Cilok Sedap Rasa'}
+                produkHarga={'Rp 12.000'}
+                img={cilok}
+              />
+              <CardProduct
+                produkNama={'Cilok Sedap Rasa'}
+                produkHarga={'Rp 12.000'}
+                img={cilok}
+              />
+              <CardProduct
+                produkNama={'Cilok Sedap Rasa'}
+                produkHarga={'Rp 12.000'}
+                img={cilok}
+              />
+              <CardProduct
+                produkNama={'Cilok Sedap Rasa'}
+                produkHarga={'Rp 12.000'}
+                img={cilok}
+              />
+              <CardProduct
+                produkNama={'Cilok Sedap Rasa'}
+                produkHarga={'Rp 12.000'}
+                img={cilok}
+              />
+              <CardProduct
+                produkNama={'Cilok Sedap Rasa'}
+                produkHarga={'Rp 12.000'}
+                img={cilok}
+              />
             </ScrollView>
           </View>
         </View>
@@ -126,7 +155,7 @@ const HomeDashboard = () => {
               height: 220,
             }}
             showsHorizontalScrollIndicator={false}>
-            {allProduct.map(val => {
+            {/* {allProduct.map(val => {
               return (
                 <CardProduct
                   key={val.id}
@@ -135,7 +164,37 @@ const HomeDashboard = () => {
                   img={val.picture}
                 />
               );
-            })}
+            })} */}
+            <CardProduct
+              produkNama={'Cilok Sedap Rasa'}
+              produkHarga={'Rp 12.000'}
+              img={cilok}
+            />
+            <CardProduct
+              produkNama={'Cilok Sedap Rasa'}
+              produkHarga={'Rp 12.000'}
+              img={cilok}
+            />
+            <CardProduct
+              produkNama={'Cilok Sedap Rasa'}
+              produkHarga={'Rp 12.000'}
+              img={cilok}
+            />
+            <CardProduct
+              produkNama={'Cilok Sedap Rasa'}
+              produkHarga={'Rp 12.000'}
+              img={cilok}
+            />
+            <CardProduct
+              produkNama={'Cilok Sedap Rasa'}
+              produkHarga={'Rp 12.000'}
+              img={cilok}
+            />
+            <CardProduct
+              produkNama={'Cilok Sedap Rasa'}
+              produkHarga={'Rp 12.000'}
+              img={cilok}
+            />
           </ScrollView>
         </View>
         <View

@@ -82,38 +82,6 @@ const Produk = () => {
           <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" img={gbr1} />
         </View>
       </ScrollView>
-      <View style={styles.navBottom}>
-        <IconNav
-          url={require('../../assets/Icon/home.png')}
-          teks="Home"
-          warna={'#4f4f4f'}
-          linkk={() => alert('Home')}
-        />
-        <IconNav
-          url={require('../../assets/Icon/search-active.png')}
-          teks="Jelajahi"
-          warna={'#33907C'}
-          linkk={() => alert('Jelajahi')}
-        />
-        <IconNav
-          url={require('../../assets/Icon/store.png')}
-          teks="Store"
-          warna={'#4f4f4f'}
-          linkk={() => alert('Jelajahi')}
-        />
-        <IconNav
-          url={require('../../assets/Icon/order.png')}
-          teks="History"
-          warna={'#4f4f4f'}
-          linkk={() => alert('History')}
-        />
-        <IconNav
-          url={require('../../assets/Icon/profile.png')}
-          teks="Profil"
-          warna={'#4f4f4f'}
-          linkk={() => alert('Profile')}
-        />
-      </View>
     </SafeAreaView>
   );
 };

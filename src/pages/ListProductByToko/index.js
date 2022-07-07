@@ -13,6 +13,7 @@ import cilok from '../../assets/image/cilok.jpg';
 import CardProduct from '../../components/card-product';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import kembali from '../../assets/Icon/Back.png';
+import FontAwe5 from 'react-native-vector-icons/Ionicons';
 
 const ListProductByToko = () => {
   return (
@@ -63,6 +64,76 @@ const ListProductByToko = () => {
           </Text>
         </View>
       </View>
+      <View
+        style={{
+          height: 65,
+          flexDirection: 'row',
+          padding: 8,
+          justifyContent: 'space-around',
+        }}>
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100%',
+            backgroundColor: '#33907C',
+            width: '40%',
+          }}>
+          <Text style={{fontSize: 16, color: 'white'}}>Rating Toko</Text>
+          <Text style={{fontSize: 16, color: 'gold'}}>4.8</Text>
+        </View>
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100%',
+            backgroundColor: '#33907C',
+            width: '40%',
+          }}>
+          <Text style={{fontSize: 16, color: 'white'}}>Jumlah Pengunjung</Text>
+          <Text style={{fontSize: 16, color: 'gold'}}>450</Text>
+        </View>
+      </View>
+      <View
+        style={{
+          height: 70,
+          paddingHorizontal: 20,
+          paddingVertical: 10,
+        }}>
+        <View
+          style={{
+            backgroundColor: 'white',
+            height: '100%',
+            borderRadius: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 5,
+            },
+            shadowOpacity: 0.34,
+            shadowRadius: 6.27,
+
+            elevation: 10,
+          }}>
+          <Text style={{color: 'black', marginBottom: 5}}>
+            Berikan penilaianmu setelah mengunjungi toko
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              width: '50%',
+            }}>
+            <FontAwe5 name="star" color="gold" size={18} />
+            <FontAwe5 name="star" color="gold" size={18} />
+            <FontAwe5 name="star" color="gold" size={18} />
+            <FontAwe5 name="star-outline" color="gold" size={18} />
+            <FontAwe5 name="star-outline" color="gold" size={18} />
+          </View>
+        </View>
+      </View>
       <ScrollView style={{flex: 1}}>
         <View style={styles.containerProduk}>
           <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" img={cilok} />
@@ -99,6 +170,7 @@ const styles = StyleSheet.create({
     height: '10%',
     backgroundColor: '#33907C',
     flexDirection: 'row',
+    paddingHorizontal: 2,
   },
   containerAlamat: {
     borderWidth: 1,

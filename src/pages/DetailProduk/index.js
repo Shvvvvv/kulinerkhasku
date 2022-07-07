@@ -12,6 +12,7 @@ import {
 import React, {useEffect} from 'react';
 import ButtonGreen from '../../components/button-green';
 import kembali from '../../assets/Icon/Back.png';
+import cilok from '../../assets/image/cilok.jpg';
 import {useDispatch, useSelector} from 'react-redux';
 import {getProductById, getStoreById} from '../../redux/actions/authAction';
 
@@ -48,7 +49,8 @@ const DetailProduk = ({navigation, route}) => {
       <ScrollView>
         <View style={{height: 225, width: '100%'}}>
           <ImageBackground
-            source={product.picture}
+            // source={product.picture}
+            source={cilok}
             resizeMode="cover"
             style={{
               height: '100%',
@@ -61,16 +63,22 @@ const DetailProduk = ({navigation, route}) => {
             {product.product_name}
           </Text>
           <Text style={{color: '#33907C', fontSize: 18, fontWeight: 'bold'}}>
-            {'Rp ' + product.price + ',-'}
+            {/* {'Rp ' + product.price + ',-'} */}
+            Rp 12.000,-
           </Text>
         </View>
         <View style={styles.containerToko}>
-          <Text style={{color: 'black', fontSize: 18}}>{store.store_name}</Text>
+          <Text style={{color: 'black', fontSize: 18}}>
+            {store.store_name} Cilok Store
+          </Text>
           <ButtonGreen p={30} l={110} judul="Kunjungi" />
         </View>
         <View style={styles.containerDeskripsi}>
           <Text style={styles.txtDesk}>Deskripsi Produk</Text>
-          <Text style={{color: 'black'}}>{product.description}</Text>
+          <Text style={{color: 'black'}}>
+            {product.description}Cilok adalah makanan yang berasal dari tepung
+            terigu
+          </Text>
         </View>
         <View style={styles.containerInfo}>
           <Text style={styles.txtDesk}>Informasi Produk</Text>
@@ -84,15 +92,21 @@ const DetailProduk = ({navigation, route}) => {
               ]}>
               Area{' '}
             </Text>
-            <Text style={styles.teks}>{': ' + product.area}</Text>
+            <Text style={styles.teks}>
+              {/* {': ' + product.area} */}: Bandung
+            </Text>
           </View>
           <View style={{flexDirection: 'row', paddingHorizontal: 20}}>
             <Text style={[styles.teks, {marginRight: 56}]}>Kategori </Text>
-            <Text style={styles.teks}>{': ' + product.type_food}</Text>
+            <Text style={styles.teks}>
+              {/* {': ' + product.type_food} */}: Makanan
+            </Text>
           </View>
           <View style={{flexDirection: 'row', paddingHorizontal: 20}}>
             <Text style={[styles.teks, {marginRight: 68}]}>Status </Text>
-            <Text style={styles.teks}>{': ' + product.status}</Text>
+            <Text style={styles.teks}>
+              {/* {': ' + product.status} */}: Tersedia
+            </Text>
           </View>
         </View>
       </ScrollView>

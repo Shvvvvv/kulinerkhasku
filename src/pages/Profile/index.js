@@ -96,12 +96,15 @@ const Profile = () => {
               fontSize: 20,
             }}>
             {/* {infodataUser.dataUser.data.name} */}
+            Syarifah
           </Text>
           <Text style={{color: 'black'}}>
             {/* {infodataUser.dataUser.data.phone} */}
+            089754925081
           </Text>
           <Text numberOfLines={1} ellipsizeMode="tail" style={{color: 'black'}}>
             {/* {infodataUser.dataUser.data.email} */}
+            syarifa213@gmail.com
           </Text>
         </View>
       </View>

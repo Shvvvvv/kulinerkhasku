@@ -6,8 +6,8 @@ const Splash = ({navigation}) => {
   useEffect(() => {
     setTimeout(() => {
       //Harusnya Login
-      navigation.replace('HomeTab');
-    }, 2000);
+      navigation.replace('ListProductByToko');
+    }, 5000);
   });
   return (
     <SafeAreaView style={styles.container}>

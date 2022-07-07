@@ -1,20 +1,19 @@
 import React, {useEffect} from 'react';
 import {StyleSheet} from 'react-native';
 
-import {
-  CardStyleInterpolators,
-  createStackNavigator,
-} from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import {
   HomeDashboard,
+  ListProduct,
   Login,
   Onboarding,
   SignupPelancong,
   SignupToko,
   Splash,
   Verify,
+  InfoToko,
 } from '../pages';
 import AddProduct from '../pages/AddProduct';
 import Artikel from '../pages/Artikel';
@@ -36,6 +35,20 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const HomeTab = () => {
+  const pengunjung = true;
+
+  const history = pengunjung && (
+    <Tab.Screen
+      name="History"
+      component={OrderHistory}
+      options={{
+        tabBarIcon: ({color, size}) => (
+          <Fontawe5 name="clipboard-list" color={color} size={size} />
+        ),
+      }}
+    />
+  );
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -53,32 +66,15 @@ const HomeTab = () => {
         }}
       />
       <Tab.Screen
-        name="Jelajahi"
-        component={HasilPencarian}
-        options={{
-          tabBarIcon: ({color, size}) => (
-            <Fontawe5 name="search" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Store"
-        component={MyStore}
+        name={pengunjung ? 'Product' : 'Store'}
+        component={pengunjung ? ListProduct : MyStore}
         options={{
           tabBarIcon: ({color, size}) => (
             <Fontawe5 name="store" color={color} size={size} />
           ),
         }}
       />
-      <Tab.Screen
-        name="History"
-        component={OrderHistory}
-        options={{
-          tabBarIcon: ({color, size}) => (
-            <Fontawe5 name="clipboard-list" color={color} size={size} />
-          ),
-        }}
-      />
+      {history}
       <Tab.Screen
         name="Profil"
         component={Profile}
@@ -231,6 +227,13 @@ const Router = () => {
       <Stack.Screen
         name="EditProfile"
         component={EditProfile}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ListProduct"
+        component={Artikel}
         options={{
           headerShown: false,
         }}
