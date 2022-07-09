@@ -20,12 +20,15 @@ const DetailProduk = ({navigation, route}) => {
   const {idProduct} = route.params;
   const product = useSelector(state => state.productReducer.product);
   const store = useSelector(state => state.storeReducers.store);
+  const user = useSelector(state => state.userReducer.dataUser.data);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getProductById(idProduct));
-    dispatch(getStoreById(product.store_id));
-  });
+    dispatch(getProductById(idProduct, user.token));
+    dispatch(getStoreById(product.store_id, user.token));
+    console.log('PutriM');
+  }, []);
+
   return (
     <SafeAreaView>
       <StatusBar barStyle="light-content" backgroundColor="#33907C" />
@@ -49,8 +52,7 @@ const DetailProduk = ({navigation, route}) => {
       <ScrollView>
         <View style={{height: 225, width: '100%'}}>
           <ImageBackground
-            // source={product.picture}
-            source={cilok}
+            source={{uri: product.picture}}
             resizeMode="cover"
             style={{
               height: '100%',
@@ -63,22 +65,16 @@ const DetailProduk = ({navigation, route}) => {
             {product.product_name}
           </Text>
           <Text style={{color: '#33907C', fontSize: 18, fontWeight: 'bold'}}>
-            {/* {'Rp ' + product.price + ',-'} */}
-            Rp 12.000,-
+            {'Rp ' + product.price + ',-'}
           </Text>
         </View>
         <View style={styles.containerToko}>
-          <Text style={{color: 'black', fontSize: 18}}>
-            {store.store_name} Cilok Store
-          </Text>
+          <Text style={{color: 'black', fontSize: 18}}>{store.store_name}</Text>
           <ButtonGreen p={30} l={110} judul="Kunjungi" />
         </View>
         <View style={styles.containerDeskripsi}>
           <Text style={styles.txtDesk}>Deskripsi Produk</Text>
-          <Text style={{color: 'black'}}>
-            {product.description}Cilok adalah makanan yang berasal dari tepung
-            terigu
-          </Text>
+          <Text style={{color: 'black'}}>{product.description}</Text>
         </View>
         <View style={styles.containerInfo}>
           <Text style={styles.txtDesk}>Informasi Produk</Text>
@@ -92,21 +88,15 @@ const DetailProduk = ({navigation, route}) => {
               ]}>
               Area{' '}
             </Text>
-            <Text style={styles.teks}>
-              {/* {': ' + product.area} */}: Bandung
-            </Text>
+            <Text style={styles.teks}>{': ' + product.area}</Text>
           </View>
           <View style={{flexDirection: 'row', paddingHorizontal: 20}}>
             <Text style={[styles.teks, {marginRight: 56}]}>Kategori </Text>
-            <Text style={styles.teks}>
-              {/* {': ' + product.type_food} */}: Makanan
-            </Text>
+            <Text style={styles.teks}>{': ' + product.type_food}</Text>
           </View>
           <View style={{flexDirection: 'row', paddingHorizontal: 20}}>
             <Text style={[styles.teks, {marginRight: 68}]}>Status </Text>
-            <Text style={styles.teks}>
-              {/* {': ' + product.status} */}: Tersedia
-            </Text>
+            <Text style={styles.teks}>{': ' + product.status}</Text>
           </View>
         </View>
       </ScrollView>

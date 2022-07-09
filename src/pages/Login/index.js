@@ -40,7 +40,6 @@ const Form = () => {
   const infodataUser = useSelector(state => state.userReducer);
   useEffect(() => {
     if (infodataUser.dataUser.status) {
-      console.log('Putri');
       nav.navigate('HomeTab');
     }
   });

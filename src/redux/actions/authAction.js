@@ -1,19 +1,14 @@
 import axios from 'axios';
-import {useDispatch} from 'react-redux';
-import {dispatch} from 'rxjs/internal/observable/pairs';
-import {GET_ALL_PRODUCTS} from '../types';
+import {API_KULINER} from '../../config';
 
 export const signUpUser = param => dispatch => {
   axios
-    .post(
-      'https://kulinerkhasku21.000webhostapp.com/public/api/register_user',
-      {
-        name: param.name,
-        email: param.email,
-        phone: param.phone,
-        password: param.password,
-      },
-    )
+    .post(API_KULINER, {
+      name: param.name,
+      email: param.email,
+      phone: param.phone,
+      password: param.password,
+    })
     .then(result => {
       console.log(result.data);
       dispatch({type: 'SUCCESS_REGISTER_USER', payload: result.data});
@@ -26,24 +21,19 @@ export const signUpUser = param => dispatch => {
 
 export const loginUser = param => dispatch => {
   axios
-    .post(
-      'https://kulinerkhasku21.000webhostapp.com/public/api/user/login',
-      param,
-    )
+    .post(API_KULINER + 'api/user/login', param)
     .then(result => {
       dispatch({type: 'SUCCES_LOGIN', payload: result.data});
     })
     .catch(error => {
+      console.log('Putri');
       console.log(error);
     });
 };
 
 export const doLogoutUser = param => {
   axios
-    .post(
-      'https://kulinerkhasku21.000webhostapp.com/public/api/user/logout',
-      param,
-    )
+    .post(API_KULINER, param)
     .then(result => {
       console.log('');
     })
@@ -54,10 +44,7 @@ export const doLogoutUser = param => {
 
 export const signupToko = param => dispatch => {
   axios
-    .post(
-      'https://kulinerkhasku21.000webhostapp.com/public/api/register_store_owner',
-      param,
-    )
+    .post(API_KULINER, param)
     .then(result => {
       dispatch({type: 'SUCCESS_REGISTER_TOKO', payload: result.data});
     })
@@ -68,7 +55,7 @@ export const signupToko = param => dispatch => {
 
 export const getAllProducts = () => dispatch => {
   axios
-    .get('https://kulinerkhasku21.000webhostapp.com/public/api/product')
+    .get(API_KULINER + 'api/product')
     .then(result => {
       console.log(result.data.data);
       dispatch({type: 'GET_ALL_PRODUCTS', payload: result.data.data});
@@ -78,24 +65,37 @@ export const getAllProducts = () => dispatch => {
     });
 };
 
-export const getProductById = id => dispatch => {
+export const getProductById = (id, token) => dispatch => {
   axios
-    .get('https://kulinerkhasku21.000webhostapp.com/public/api/product/' + id)
+    .get(API_KULINER + 'api/product/' + id, {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    })
     .then(result => {
       dispatch({type: 'GET_PRODUCT_BY_ID', payload: result.data.data});
     })
     .catch(error => {
+      console.log('Ggl');
       console.log(error);
     });
 };
 
-export const getStoreById = id => dispatch => {
+export const getStoreById = (id, token) => dispatch => {
   axios
-    .get('https://kulinerkhasku21.000webhostapp.com/public/api/store/' + id)
+    .get(
+      'https://hashtagkulinerkhasku.000webhostapp.com/public/api/store/' + id,
+      {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      },
+    )
     .then(result => {
       dispatch({type: 'GET_STORE_BY_ID', payload: result.data.data});
     })
     .catch(error => {
+      console.log('gagal');
       console.log(error);
     });
 };

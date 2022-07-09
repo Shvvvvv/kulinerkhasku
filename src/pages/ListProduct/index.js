@@ -69,17 +69,7 @@ const Produk = () => {
             justifyContent: 'space-between',
             padding: 15,
           }}>
-          <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" img={gbr1} />
-          <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" img={gbr1} />
-          <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" img={gbr1} />
-          <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" img={gbr1} />
-          <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" img={gbr1} />
-          <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" img={gbr1} />
-          <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" img={gbr1} />
-          <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" img={gbr1} />
-          <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" img={gbr1} />
-          <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" img={gbr1} />
-          <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" img={gbr1} />
+          {/* <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" /> */}
         </View>
       </ScrollView>
     </SafeAreaView>

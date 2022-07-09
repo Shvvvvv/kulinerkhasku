@@ -91,7 +91,7 @@ const HomeDashboard = ({navigation}) => {
                 height: 220,
               }}
               showsHorizontalScrollIndicator={false}>
-              {/* {allProduct.map(val => {
+              {allProduct.map(val => {
                 return (
                   <CardProduct
                     key={val.id}
@@ -101,37 +101,7 @@ const HomeDashboard = ({navigation}) => {
                     idP={val.id}
                   />
                 );
-              })} */}
-              <CardProduct
-                produkNama={'Cilok Sedap Rasa'}
-                produkHarga={'Rp 12.000'}
-                img={cilok}
-              />
-              <CardProduct
-                produkNama={'Cilok Sedap Rasa'}
-                produkHarga={'Rp 12.000'}
-                img={cilok}
-              />
-              <CardProduct
-                produkNama={'Cilok Sedap Rasa'}
-                produkHarga={'Rp 12.000'}
-                img={cilok}
-              />
-              <CardProduct
-                produkNama={'Cilok Sedap Rasa'}
-                produkHarga={'Rp 12.000'}
-                img={cilok}
-              />
-              <CardProduct
-                produkNama={'Cilok Sedap Rasa'}
-                produkHarga={'Rp 12.000'}
-                img={cilok}
-              />
-              <CardProduct
-                produkNama={'Cilok Sedap Rasa'}
-                produkHarga={'Rp 12.000'}
-                img={cilok}
-              />
+              })}
             </ScrollView>
           </View>
         </View>
@@ -155,7 +125,7 @@ const HomeDashboard = ({navigation}) => {
               height: 220,
             }}
             showsHorizontalScrollIndicator={false}>
-            {/* {allProduct.map(val => {
+            {allProduct.map(val => {
               return (
                 <CardProduct
                   key={val.id}
@@ -164,37 +134,7 @@ const HomeDashboard = ({navigation}) => {
                   img={val.picture}
                 />
               );
-            })} */}
-            <CardProduct
-              produkNama={'Cilok Sedap Rasa'}
-              produkHarga={'Rp 12.000'}
-              img={cilok}
-            />
-            <CardProduct
-              produkNama={'Cilok Sedap Rasa'}
-              produkHarga={'Rp 12.000'}
-              img={cilok}
-            />
-            <CardProduct
-              produkNama={'Cilok Sedap Rasa'}
-              produkHarga={'Rp 12.000'}
-              img={cilok}
-            />
-            <CardProduct
-              produkNama={'Cilok Sedap Rasa'}
-              produkHarga={'Rp 12.000'}
-              img={cilok}
-            />
-            <CardProduct
-              produkNama={'Cilok Sedap Rasa'}
-              produkHarga={'Rp 12.000'}
-              img={cilok}
-            />
-            <CardProduct
-              produkNama={'Cilok Sedap Rasa'}
-              produkHarga={'Rp 12.000'}
-              img={cilok}
-            />
+            })}
           </ScrollView>
         </View>
         <View

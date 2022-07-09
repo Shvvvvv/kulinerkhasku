@@ -30,14 +30,15 @@ import Profile from '../pages/Profile';
 import {lebar} from '../assets/style/Style';
 import Fontawe5 from 'react-native-vector-icons/FontAwesome5';
 import EditProfile from '../pages/EditProfile';
+import {useSelector} from 'react-redux';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const HomeTab = () => {
-  const pengunjung = true;
+  const user = useSelector(state => state.userReducer.dataUser.data);
 
-  const history = pengunjung && (
+  const history = user.role === 'Pengunjung' && (
     <Tab.Screen
       name="History"
       component={OrderHistory}
@@ -66,8 +67,8 @@ const HomeTab = () => {
         }}
       />
       <Tab.Screen
-        name={pengunjung ? 'Product' : 'Store'}
-        component={pengunjung ? ListProduct : MyStore}
+        name={user.role === 'Pengunjung' ? 'Product' : 'Store'}
+        component={user.role === 'Pengunjung' ? ListProduct : MyStore}
         options={{
           tabBarIcon: ({color, size}) => (
             <Fontawe5 name="store" color={color} size={size} />
@@ -233,7 +234,7 @@ const Router = () => {
       />
       <Stack.Screen
         name="ListProduct"
-        component={Artikel}
+        component={ListProduct}
         options={{
           headerShown: false,
         }}

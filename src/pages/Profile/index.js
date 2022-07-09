@@ -14,10 +14,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 
 const Profile = () => {
-  // const infodataUser = useSelector(state => state.userReducer);
-  // useEffect(() => {
-  //   console.log(infodataUser.dataUser.data.name);
-  // });
+  const infodataUser = useSelector(state => state.userReducer);
   const nav = useNavigation();
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#E5E5E5'}}>
@@ -95,16 +92,13 @@ const Profile = () => {
               fontWeight: 'bold',
               fontSize: 20,
             }}>
-            {/* {infodataUser.dataUser.data.name} */}
-            Syarifah
+            {infodataUser.dataUser.data.name}
           </Text>
           <Text style={{color: 'black'}}>
-            {/* {infodataUser.dataUser.data.phone} */}
-            089754925081
+            {infodataUser.dataUser.data.phone}
           </Text>
           <Text numberOfLines={1} ellipsizeMode="tail" style={{color: 'black'}}>
-            {/* {infodataUser.dataUser.data.email} */}
-            syarifa213@gmail.com
+            {infodataUser.dataUser.data.email}
           </Text>
         </View>
       </View>

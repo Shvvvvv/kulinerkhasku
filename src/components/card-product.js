@@ -19,7 +19,7 @@ const CardProduct = props => {
           }}>
           <View style={styles.imageContainer}>
             <ImageBackground
-              source={props.img}
+              source={{uri: props.img}}
               resizeMode="cover"
               style={{flex: 1}}
               imageStyle={styles.image}
