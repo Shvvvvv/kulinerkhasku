@@ -6,7 +6,7 @@ const Splash = ({navigation}) => {
   useEffect(() => {
     setTimeout(() => {
       //Harusnya Login
-      navigation.replace('ListProduct');
+      navigation.replace('Login');
     }, 5000);
   });
   return (
