@@ -1,33 +1,27 @@
+import React, {useEffect} from 'react';
+
 import {
+  Image,
+  ImageBackground,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
-  View,
-  SafeAreaView,
-  StatusBar,
-  ScrollView,
-  ImageBackground,
-  Image,
   TouchableOpacity,
+  View,
 } from 'react-native';
-import React, {useEffect} from 'react';
-import ButtonGreen from '../../components/button-green';
+
+import {useDispatch, useSelector} from 'react-redux';
+
 import kembali from '../../assets/Icon/Back.png';
 import cilok from '../../assets/image/cilok.jpg';
-import {useDispatch, useSelector} from 'react-redux';
-import {getProductById, getStoreById} from '../../redux/actions/authAction';
+import ButtonGreen from '../../components/button-green';
 
 const DetailProduk = ({navigation, route}) => {
-  const {idProduct} = route.params;
+  // const {idProduct} = route.params;
   const product = useSelector(state => state.productReducer.product);
   const store = useSelector(state => state.storeReducers.store);
-  const user = useSelector(state => state.userReducer.dataUser.data);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getProductById(idProduct, user.token));
-    dispatch(getStoreById(product.store_id, user.token));
-    console.log('PutriM');
-  }, []);
 
   return (
     <SafeAreaView>
@@ -42,7 +36,7 @@ const DetailProduk = ({navigation, route}) => {
         }}>
         <TouchableOpacity
           onPress={() => {
-            navigation.goBack();
+            // navigation.goBack();
           }}>
           <View>
             <Image source={kembali} style={{height: 35, width: 35, top: 5}} />

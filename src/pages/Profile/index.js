@@ -1,21 +1,26 @@
+import React, {useEffect} from 'react';
+
 import {
+  Image,
+  SafeAreaView,
+  StatusBar,
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
-  StatusBar,
-  Image,
 } from 'react-native';
-import React, {useEffect} from 'react';
-import map from './../../assets/Icon/Maps.png';
-import IconNav from '../../components/icon-navbar';
-import ButtonGreen from '../../components/button-green';
+
 import {useNavigation} from '@react-navigation/native';
+
 import {useSelector} from 'react-redux';
+
+import map from '../../assets/Icon/Maps.png';
+import ButtonGreen from '../../components/button-green';
+import IconNav from '../../components/icon-navbar';
 
 const Profile = () => {
   const infodataUser = useSelector(state => state.userReducer);
   const nav = useNavigation();
+  console.log('xxx', infodataUser);
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#E5E5E5'}}>
       <StatusBar barStyle="light-content" backgroundColor="#33907C" />

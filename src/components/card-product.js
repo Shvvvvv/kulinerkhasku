@@ -1,22 +1,22 @@
+import React from 'react';
+
 import {
   ImageBackground,
   StyleSheet,
   Text,
-  View,
   TouchableHighlight,
+  View,
 } from 'react-native';
-import React from 'react';
+
 import {useNavigation} from '@react-navigation/native';
 
+import {useDispatch, useSelector} from 'react-redux';
+
 const CardProduct = props => {
-  const nav = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        <TouchableHighlight
-          onPress={() => {
-            nav.navigate('DetailProduk', {idProduct: props.idP});
-          }}>
+        <TouchableHighlight onPress={props.onPress}>
           <View style={styles.imageContainer}>
             <ImageBackground
               source={{uri: props.img}}
