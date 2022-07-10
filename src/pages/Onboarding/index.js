@@ -1,9 +1,15 @@
-import {StyleSheet, Text, View, StatusBar, Image} from 'react-native';
-import React from 'react';
-import AppIntroSlider from 'react-native-app-intro-slider';
-import {tinggi, lebar} from '../../assets/style/Style';
+import React, {useEffect} from 'react';
+
+import {Image, StatusBar, StyleSheet, Text, View} from 'react-native';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
+import AppIntroSlider from 'react-native-app-intro-slider';
 import {SafeAreaView} from 'react-native-safe-area-context';
+
+import {useDispatch} from 'react-redux';
+
+import {lebar, tinggi} from '../../assets/style/Style';
 
 const data = [
   {
@@ -25,6 +31,13 @@ const data = [
 
 const Onboarding = () => {
   const navigation = useNavigation();
+  // const dispatch = useDispatch();
+  const setFirst = async () => {
+    const jsonValue = JSON.stringify(true);
+    await AsyncStorage.setItem('is_first', jsonValue);
+    navigation.navigate('Login');
+  };
+
   const renderItem = ({item}) => {
     return (
       <SafeAreaView style={styles.container}>
@@ -65,7 +78,7 @@ const Onboarding = () => {
         renderItem={renderItem}
         renderNextButton={renderNextButton}
         renderDoneButton={renderFinishButton}
-        onDone={() => navigation.navigate('Login')}
+        onDone={() => setFirst()}
         activeDotStyle={{backgroundColor: '#33907C', bottom: 80}}
         dotStyle={{backgroundColor: '#77C3AF', bottom: 80}}
         data={data}
@@ -87,8 +100,7 @@ const styles = StyleSheet.create({
     flex: 1,
     maxHeight: tinggi / 1.7,
     backgroundColor: 'white',
-    justifyContent: 'center',
-    paddingBottom: 21,
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
   kotakContent: {
@@ -125,7 +137,7 @@ const styles = StyleSheet.create({
     color: '#33907C',
     textAlign: 'center',
     maxWidth: 290,
-    marginBottom: 25,
+    marginBottom: tinggi - tinggi / 1.25,
     lineHeight: 25,
     marginTop: 20,
     fontFamily: 'Montserrat-Regular',

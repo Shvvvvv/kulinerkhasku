@@ -1,37 +1,55 @@
+import React, {useEffect, useRef, useState} from 'react';
+
 import {
+  Dimensions,
   Image,
+  ImageBackground,
+  Modal,
+  SafeAreaView,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
+  TouchableHighlight,
   TouchableOpacity,
   View,
-  SafeAreaView,
-  ScrollView,
-  TextInput,
-  ImageBackground,
-  Modal,
-  TouchableHighlight,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import DatePicker from 'react-native-date-picker';
-import kembali from '../../assets/Icon/Back2.png';
-import {tinggi, lebar} from '../../assets/style/Style';
-import camera from '../../assets/Icon/Vector.png';
-import maps from '../../assets/image/bg-map.png';
-import nav from '../../assets/Icon/Icon.png';
-import ButtonGreen from '../../components/button-green';
-import close from '../../assets/Icon/Close.png';
-import carii from '../../assets/Icon/carii.png';
-import Button from '../../components/button-light-semibold';
 import DocumentPicker from 'react-native-document-picker';
 import ImagePicker from 'react-native-image-crop-picker';
+import MapView, {AnimatedRegion, MarkerAnimated} from 'react-native-maps';
+
 import {Formik} from 'formik';
+
+import kembali from '../../assets/Icon/Back2.png';
+import carii from '../../assets/Icon/carii.png';
+import close from '../../assets/Icon/Close.png';
+import nav from '../../assets/Icon/Icon.png';
+import camera from '../../assets/Icon/Vector.png';
+import maps from '../../assets/image/bg-map.png';
+import {lebar, tinggi} from '../../assets/style/Style';
+import ButtonGreen from '../../components/button-green';
+import Button from '../../components/button-light-semibold';
 
 const LanjutDaftarToko = ({navigation}) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [singleFile, setSingleFile] = useState('');
+  //changed from useState to useRef
+  const mapRef = useRef(null);
+  const [myMarker, setMyMarker] = useState(null);
+  const [coordinate, setCoordinate] = useState(
+    new AnimatedRegion({
+      latitude: 107.57147742604502,
+      longitude: -6.894428621193786,
+      latitudeDelta: 0.012,
+      longitudeDelta: 0.012,
+    }),
+  );
 
   const uploadImage = async () => {
     if (singleFile != null) {
@@ -51,6 +69,35 @@ const LanjutDaftarToko = ({navigation}) => {
       setSingleFile(image);
       console.log(image.path);
     });
+  };
+
+  const setCurrentCoordinate = async () => {
+    const coordLat = await AsyncStorage.getItem('latitude');
+    const coordLong = await AsyncStorage.getItem('longitude');
+    const num1 = Number(coordLat);
+    const num2 = Number(coordLong);
+    let newCoordinate = {
+      latitude: num1,
+      longitude: num2,
+      latitudeDelta: 0.012,
+      longitudeDelta: 0.012,
+    };
+    //camera will position itself to these coordinates.
+    const newCamera = {
+      center: {
+        latitude: num1,
+        longitude: num2,
+      },
+      pitch: 0,
+      heading: 0,
+      //zoom: 17  --Use it when required
+    };
+
+    if (myMarker) {
+      myMarker.animateMarkerToCoordinate(newCoordinate, 2000);
+      //camera type, `newCamera`, used inside animateCamera
+      mapRef.current.animateCamera(newCamera, {duration: 2000});
+    }
   };
 
   const selectFile = async () => {
@@ -124,8 +171,10 @@ const LanjutDaftarToko = ({navigation}) => {
     setModalVisible(!isModalVisible);
   };
   useEffect(() => {
-    console.log(singleFile);
-  }, [singleFile]);
+    console.log(mapRef);
+    console.log(myMarker);
+    setCurrentCoordinate();
+  }, [mapRef, myMarker, setCurrentCoordinate]);
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="white" />
@@ -133,7 +182,7 @@ const LanjutDaftarToko = ({navigation}) => {
         onPress={() => {
           navigation.goBack();
         }}>
-        <View style={{paddingHorizontal: 19, paddingVertical: 10}}>
+        <View style={{paddingHorizontal: 19, paddingTop: tinggi / 38}}>
           <Image source={kembali} style={{height: 25, width: 25}} />
         </View>
       </TouchableOpacity>
@@ -386,11 +435,41 @@ const LanjutDaftarToko = ({navigation}) => {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
-                  <Text style={{color: 'black'}}>INI PETA!!</Text>
+                  <MapView
+                    ref={mapRef} //There is also change here
+                    style={styles.map}
+                    initialRegion={{
+                      latitude: -6.894428621193786,
+                      longitude: 107.57147742604502,
+                      latitudeDelta: 0.012,
+                      longitudeDelta: 0.012,
+                    }}
+                    //These are newly added
+                    pitchEnabled={false}
+                    zoomEnabled={false}>
+                    <MarkerAnimated
+                      ref={marker => {
+                        setMyMarker(marker);
+                      }}
+                      image={require('../../assets/logo/logoMap.png')}
+                      coordinate={coordinate}
+                      style={{width: 20, height: 20}}
+                    />
+                  </MapView>
                 </View>
               </View>
               <View style={{padding: 20}}>
-                <ButtonGreen judul="Gunakan lokasi ini" p={40} />
+                {/* <TouchableOpacity
+                    onPress={() => animateMarkerAndCamera()}
+                    style={[styles.bubble, styles.button]}
+                >
+                    <Text>Animate</Text>
+                </TouchableOpacity> */}
+                <ButtonGreen
+                  judul="Gunakan lokasi ini"
+                  p={40}
+                  onPress={setCurrentCoordinate}
+                />
               </View>
             </View>
           </View>
@@ -439,4 +518,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   camera: {width: 50, height: 50, marginBottom: 15, alignSelf: 'center'},
+  map: {
+    width: lebar / 1.1,
+    height: tinggi / 1.5,
+  },
 });

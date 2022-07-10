@@ -1,9 +1,12 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import axios from 'axios';
+
 import {API_KULINER} from '../../config';
 
 export const signUpUser = param => dispatch => {
   axios
-    .post(API_KULINER, {
+    .post(API_KULINER + 'api/register_user', {
       name: param.name,
       email: param.email,
       phone: param.phone,
@@ -22,11 +25,35 @@ export const signUpUser = param => dispatch => {
 export const loginUser = param => dispatch => {
   axios
     .post(API_KULINER + 'api/user/login', param)
-    .then(result => {
+    .then(async result => {
+      // console.log(result.data.data.token);
+      dispatch({type: 'SUCCES_LOGIN', payload: result.data});
+      await AsyncStorage.mergeItem(
+        'idUser',
+        JSON.stringify(result.data.data.id),
+      );
+      await AsyncStorage.mergeItem('name', result.data.data.name);
+      await AsyncStorage.mergeItem('phone', result.data.data.phone);
+      await AsyncStorage.mergeItem('email', result.data.data.email);
+      await AsyncStorage.mergeItem('role', result.data.data.role);
+      await AsyncStorage.mergeItem('status', result.data.data.status);
+      await AsyncStorage.mergeItem('token', result.data.data.token);
+      // dispatch({type: 'SUCCES_LOGIN', payload: result.data});
+    })
+    .catch(error => {
+      // console.log('Putri');
+      console.log(error);
+    });
+};
+
+export const reloginUser = param => dispatch => {
+  axios
+    .post(API_KULINER + 'api/user/login', param)
+    .then(async result => {
       dispatch({type: 'SUCCES_LOGIN', payload: result.data});
     })
     .catch(error => {
-      console.log('Putri');
+      // console.log('Putri');
       console.log(error);
     });
 };

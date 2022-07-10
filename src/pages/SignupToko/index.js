@@ -1,25 +1,28 @@
+import React, {useEffect} from 'react';
+
 import {
   Image,
+  SafeAreaView,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  SafeAreaView,
-  ScrollView,
 } from 'react-native';
+
+import {useNavigation} from '@react-navigation/native';
+
+import {useDispatch, useSelector} from 'react-redux';
 
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 
-import React, {useEffect} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
 import kembali from '../../assets/Icon/Back2.png';
-import {tinggi, lebar} from '../../assets/style/Style';
 import logo from '../../assets/logo/logo2.png';
-import InputanWhite from '../../components/inputan-white';
+import {lebar, tinggi} from '../../assets/style/Style';
 import ButtonGreen from '../../components/button-green';
-import {useNavigation} from '@react-navigation/native';
+import InputanWhite from '../../components/inputan-white';
 import {signupToko} from '../../redux/actions';
 
 const validationSchema = Yup.object({

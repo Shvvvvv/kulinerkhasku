@@ -1,9 +1,15 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
+
 import {StyleSheet} from 'react-native';
 
-import {createStackNavigator} from '@react-navigation/stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createStackNavigator} from '@react-navigation/stack';
+import Fontawe5 from 'react-native-vector-icons/FontAwesome5';
 
+import {useDispatch, useSelector} from 'react-redux';
+
+import {lebar} from '../assets/style/Style';
 import {
   HomeDashboard,
   ListProduct,
@@ -13,32 +19,68 @@ import {
   SignupToko,
   Splash,
   Verify,
-  InfoToko,
 } from '../pages';
 import AddProduct from '../pages/AddProduct';
-import Artikel from '../pages/Artikel';
 import DetailProduk from '../pages/DetailProduk';
+import EditProfile from '../pages/EditProfile';
 import HasilPencarian from '../pages/HasilPencarian';
 import Produk from '../pages/ListProduct';
 import ListProductByToko from '../pages/ListProductByToko';
-import OrderHistory from '../pages/OrderHistory';
-import LanjutDaftarToko from '../pages/SignupToko/lanjut';
 import MyStore from '../pages/MyStore';
-import MyStoreNothingProduct from '../pages/MyStoreNothingProduct';
 import MyStoreNothing from '../pages/MyStoreNothing';
+import MyStoreNothingProduct from '../pages/MyStoreNothingProduct';
+import OrderHistory from '../pages/OrderHistory';
 import Profile from '../pages/Profile';
-import {lebar} from '../assets/style/Style';
-import Fontawe5 from 'react-native-vector-icons/FontAwesome5';
-import EditProfile from '../pages/EditProfile';
-import {useSelector} from 'react-redux';
+import LanjutDaftarToko from '../pages/SignupToko/lanjut';
+import InfoToko from '../pages/InfoToko';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const HomeTab = () => {
+  const dispatch = useDispatch();
+  const [userx, setUserx] = useState({
+    id: 0,
+    name: '',
+    phone: '',
+    email: '',
+    role: '',
+    status: '',
+    token: '',
+  });
   const user = useSelector(state => state.userReducer.dataUser.data);
+  const getAll = async () => {
+    const id = await AsyncStorage.getItem('idUser');
+    const name = await AsyncStorage.getItem('name');
+    const phone = await AsyncStorage.getItem('phone');
+    const email = await AsyncStorage.getItem('email');
+    const role = await AsyncStorage.getItem('role');
+    const status = await AsyncStorage.getItem('status');
+    const token = await AsyncStorage.getItem('token');
+    // console.log(role + ' merupakan rolenya');
+    setUserx({
+      data: {
+        id: id,
+        name: name,
+        phone: phone,
+        email: email,
+        role: role,
+        status: status,
+        token: token,
+      },
+    });
+  };
+  useEffect(() => {
+    getAll();
+    dispatch({type: 'SUCCES_LOGIN', payload: userx});
+    // console.log(userx);
+  }, []);
 
-  const history = user.role === 'Pengunjung' && (
+  useEffect(() => {
+    // console.log(userx);
+  }, [userx]);
+
+  const history = userx?.data?.role === 'Pengunjung' && (
     <Tab.Screen
       name="History"
       component={OrderHistory}
@@ -67,8 +109,8 @@ const HomeTab = () => {
         }}
       />
       <Tab.Screen
-        name={user.role === 'Pengunjung' ? 'Product' : 'Store'}
-        component={user.role === 'Pengunjung' ? ListProduct : MyStore}
+        name={userx?.data?.role === 'Pengunjung' ? 'Product' : 'Store'}
+        component={userx?.data?.role === 'Pengunjung' ? ListProduct : MyStore}
         options={{
           tabBarIcon: ({color, size}) => (
             <Fontawe5 name="store" color={color} size={size} />
@@ -156,13 +198,6 @@ const Router = () => {
         }}
       />
       <Stack.Screen
-        name="Artikel"
-        component={Artikel}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
         name="DetailProduk"
         component={DetailProduk}
         options={{
@@ -235,6 +270,13 @@ const Router = () => {
       <Stack.Screen
         name="ListProduct"
         component={ListProduct}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="InfoToko"
+        component={InfoToko}
         options={{
           headerShown: false,
         }}

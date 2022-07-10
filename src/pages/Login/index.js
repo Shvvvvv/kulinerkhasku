@@ -10,12 +10,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+
 import {useNavigation} from '@react-navigation/core';
 import {SafeAreaView} from 'react-native-safe-area-context';
+
 import {useDispatch, useSelector} from 'react-redux';
+
 import {Formik} from 'formik';
 import {useState} from 'react/cjs/react.development';
 import * as Yup from 'yup';
+
 import logo from '../../assets/logo/logo2.png';
 import {lebar, tinggi} from '../../assets/style/Style';
 import ButtonGreen from '../../components/button-green';
@@ -165,7 +169,7 @@ const Login = ({navigation}) => {
               <Button
                 teks="Toko"
                 link={() => {
-                  navigation.navigate('SignupToko');
+                  navigation.navigate('LanjutDaftarToko');
                   setShow(false);
                 }}
               />

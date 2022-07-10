@@ -1,31 +1,78 @@
+import React, {useEffect, useState} from 'react';
+
 import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
-  StatusBar,
-  Image,
-  ScrollView,
 } from 'react-native';
-import React, {useEffect} from 'react';
-import {lebar} from '../../assets/style/Style';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
+
+import {useDispatch, useSelector} from 'react-redux';
+
+import map from '../../assets/Icon/Maps.png';
 import notif from '../../assets/Icon/Notification.png';
-import Searching from '../../components/machine-search';
-import CR from '../../components/carousel';
-import CardProduct from '../../components/card-product';
+import cilok from '../../assets/image/cilok.jpg';
+import {lebar} from '../../assets/style/Style';
 import ButtonGreen from '../../components/button-green';
-import map from './../../assets/Icon/Maps.png';
 import ButtonWhite from '../../components/button-white';
 import ArtikelList from '../../components/card-list-artikel';
+import CardProduct from '../../components/card-product';
+import CR from '../../components/carousel';
+import Searching from '../../components/machine-search';
 import {getAllProducts} from '../../redux/actions';
-import {useDispatch, useSelector} from 'react-redux';
-import cilok from '../../assets/image/cilok.jpg';
+import {getProductById, getStoreById} from '../../redux/actions/authAction';
 
 const HomeDashboard = ({navigation}) => {
+  const [userx, setUserx] = useState({
+    id: 0,
+    name: '',
+    phone: '',
+    email: '',
+    role: '',
+    status: '',
+    token: '',
+  });
+  const [alamat, setAlamat] = useState('');
   const allProduct = useSelector(state => state.productReducer.listProduct);
+  const nav = useNavigation();
+  const user = useSelector(state => state.userReducer.dataUser.data);
   const dispatch = useDispatch();
 
+  const navToDetailStore = async (idProduct, idStore) => {
+    await dispatch(getProductById(idProduct, userx.token));
+    await dispatch(getStoreById(idStore, userx.token));
+    nav.navigate('DetailProduk', {idProduct: idProduct});
+  };
+
+  const getAll = async () => {
+    const id = await AsyncStorage.getItem('idUser');
+    const name = await AsyncStorage.getItem('name');
+    const phone = await AsyncStorage.getItem('phone');
+    const email = await AsyncStorage.getItem('email');
+    const role = await AsyncStorage.getItem('role');
+    const status = await AsyncStorage.getItem('status');
+    const token = await AsyncStorage.getItem('token');
+    const Addrs = await AsyncStorage.getItem('currentAddress');
+    setUserx({
+      id: id,
+      name: name,
+      phone: phone,
+      email: email,
+      role: role,
+      status: status,
+      token: token,
+    });
+    setAlamat(Addrs);
+  };
+
   useEffect(() => {
+    getAll();
     dispatch(getAllProducts());
   }, []);
 
@@ -65,7 +112,7 @@ const HomeDashboard = ({navigation}) => {
               numberOfLines={1}
               ellipsizeMode="tail"
               style={{color: 'white'}}>
-              Jl. Dakota No. 8a Sukaraja Bandung, Jawa Barat, Indonesia
+              {alamat}
             </Text>
           </View>
         </View>
@@ -132,34 +179,10 @@ const HomeDashboard = ({navigation}) => {
                   produkNama={val.product_name}
                   produkHarga={'Rp ' + val.price}
                   img={val.picture}
+                  onPress={() => navToDetailStore(val.id, val.store_id)}
                 />
               );
             })}
-          </ScrollView>
-        </View>
-        <View
-          style={{
-            backgroundColor: '#33907C',
-            height: 250,
-            padding: 20,
-          }}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Text style={{color: 'white', fontWeight: 'bold', fontSize: 18}}>
-              Artikel Baru
-            </Text>
-            <ButtonWhite l={120} p={30} judul="Lihat Semua" />
-          </View>
-          <ScrollView
-            nestedScrollEnabled={true}
-            style={{
-              flex: 1,
-              marginTop: 10,
-            }}>
-            <ArtikelList />
-            <ArtikelList />
-            <ArtikelList />
-            <ArtikelList />
-            <ArtikelList />
           </ScrollView>
         </View>
       </ScrollView>

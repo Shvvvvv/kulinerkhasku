@@ -1313,10 +1313,10 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@react-native-async-storage/async-storage@^1.17.3":
-  "integrity" "sha512-2dxdlGwBjBP2qYu6F72U7cRRFshISYiNEWCaQNOJtxUERCMaYRWcniYqhL248KSbGUMpRhFCEtliztsiGoYYMA=="
-  "resolved" "https://registry.npmjs.org/@react-native-async-storage/async-storage/-/async-storage-1.17.3.tgz"
-  "version" "1.17.3"
+"@react-native-async-storage/async-storage@^1.17.7":
+  "integrity" "sha512-mDtWhCcpxzrZhA95f6zi0pnBsjBEZW1LKZWfxVXG0UfaWpPxDBCKowNk2xjRTytckZeVhjmPJPtBU+8QNQcR0A=="
+  "resolved" "https://registry.npmjs.org/@react-native-async-storage/async-storage/-/async-storage-1.17.7.tgz"
+  "version" "1.17.7"
   dependencies:
     "merge-options" "^3.0.4"
 
@@ -6278,6 +6278,21 @@
   dependencies:
     "invariant" "^2.2.4"
 
+"react-native-encrypted-storage@^4.0.2":
+  "integrity" "sha512-vneDkHGDuTvLQjUBztqb2YI8QoH1zxdJonPGTS+g57lfJZff9fAjoLSSb6NgMBebpXFcK3I3sEresGyL+3AArw=="
+  "resolved" "https://registry.npmjs.org/react-native-encrypted-storage/-/react-native-encrypted-storage-4.0.2.tgz"
+  "version" "4.0.2"
+
+"react-native-geocoder@^0.5.0":
+  "integrity" "sha512-bFCvFvlRvIw66krT6RIanZFZj1/B7Oq1cyr5L0DHpc12iCNneOenNVAxA1gDULqKIphkB1D67Ybm7NpJVakHnw=="
+  "resolved" "https://registry.npmjs.org/react-native-geocoder/-/react-native-geocoder-0.5.0.tgz"
+  "version" "0.5.0"
+
+"react-native-geolocation-service@^5.3.0":
+  "integrity" "sha512-imK/yjxqPMIydSjZLpqPh7U073Fpe1JAaZHiIzLzWnzv89OGey6t4Zj/POg3+xtmGcbDoMcEOx8hbNY/fXaD9Q=="
+  "resolved" "https://registry.npmjs.org/react-native-geolocation-service/-/react-native-geolocation-service-5.3.0.tgz"
+  "version" "5.3.0"
+
 "react-native-gesture-handler@*", "react-native-gesture-handler@^2.3.0", "react-native-gesture-handler@>= 1.0.0":
   "integrity" "sha512-dgfx/fY61gLMWrGTcSlKTW7dhrzIGF+w3QwvkudBF1zssRlc+HxhkAhrma6d7DHXp1MfSbS6tYXrbpMPUZYW6A=="
   "resolved" "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-2.3.0.tgz"
@@ -6374,7 +6389,7 @@
     "prop-types" "^15.7.2"
     "yargs" "^16.1.1"
 
-"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.68 || 1000.0.0", "react-native@>= 0.51", "react-native@>=0.40.0", "react-native@>=0.50.0", "react-native@>=0.57", "react-native@>=0.60", "react-native@>=0.65.0", "react-native@0.67.3":
+"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.69 || 1000.0.0", "react-native@>= 0.51", "react-native@>=0.40.0", "react-native@>=0.50.0", "react-native@>=0.57", "react-native@>=0.60", "react-native@>=0.65.0", "react-native@0.67.3":
   "integrity" "sha512-epMVRMRH7dLCis97+YwiV4dmTVZO6qKmQgwcTNcxVt/kEMxAa+OYK7h81+99/n7XCeMFk/U2zYOBuQqc7c5Amg=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.67.3.tgz"
   "version" "0.67.3"
