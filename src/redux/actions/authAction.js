@@ -7,7 +7,7 @@ import {API_KULINER} from '../../config';
 
 export const signUpUser = param => dispatch => {
   axios
-    .post(API_KULINER, {
+    .post(API_KULINER + 'api/register_user', {
       name: param.name,
       email: param.email,
       phone: param.phone,

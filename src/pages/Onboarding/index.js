@@ -100,8 +100,7 @@ const styles = StyleSheet.create({
     flex: 1,
     maxHeight: tinggi / 1.7,
     backgroundColor: 'white',
-    justifyContent: 'center',
-    paddingBottom: 21,
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
   kotakContent: {
@@ -138,7 +137,7 @@ const styles = StyleSheet.create({
     color: '#33907C',
     textAlign: 'center',
     maxWidth: 290,
-    marginBottom: 25,
+    marginBottom: tinggi - tinggi / 1.25,
     lineHeight: 25,
     marginTop: 20,
     fontFamily: 'Montserrat-Regular',

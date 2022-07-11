@@ -69,7 +69,6 @@ const HomeDashboard = ({navigation}) => {
       token: token,
     });
     setAlamat(Addrs);
-    console.log(Addrs, alamat);
   };
 
   useEffect(() => {
@@ -184,31 +183,6 @@ const HomeDashboard = ({navigation}) => {
                 />
               );
             })}
-          </ScrollView>
-        </View>
-        <View
-          style={{
-            backgroundColor: '#33907C',
-            height: 250,
-            padding: 20,
-          }}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Text style={{color: 'white', fontWeight: 'bold', fontSize: 18}}>
-              Artikel Baru
-            </Text>
-            <ButtonWhite l={120} p={30} judul="Lihat Semua" />
-          </View>
-          <ScrollView
-            nestedScrollEnabled={true}
-            style={{
-              flex: 1,
-              marginTop: 10,
-            }}>
-            <ArtikelList />
-            <ArtikelList />
-            <ArtikelList />
-            <ArtikelList />
-            <ArtikelList />
           </ScrollView>
         </View>
       </ScrollView>

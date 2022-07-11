@@ -203,7 +203,7 @@ const LanjutDaftarToko = ({navigation}) => {
         onPress={() => {
           navigation.goBack();
         }}>
-        <View style={{paddingHorizontal: 19, paddingVertical: 10}}>
+        <View style={{paddingHorizontal: 19, paddingTop: tinggi / 38}}>
           <Image source={kembali} style={{height: 25, width: 25}} />
         </View>
       </TouchableOpacity>

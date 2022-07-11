@@ -12,7 +12,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {lebar} from '../assets/style/Style';
 import {
   HomeDashboard,
-  InfoToko,
   ListProduct,
   Login,
   Onboarding,
@@ -22,7 +21,6 @@ import {
   Verify,
 } from '../pages';
 import AddProduct from '../pages/AddProduct';
-import Artikel from '../pages/Artikel';
 import DetailProduk from '../pages/DetailProduk';
 import EditProfile from '../pages/EditProfile';
 import HasilPencarian from '../pages/HasilPencarian';
@@ -34,6 +32,7 @@ import MyStoreNothingProduct from '../pages/MyStoreNothingProduct';
 import OrderHistory from '../pages/OrderHistory';
 import Profile from '../pages/Profile';
 import LanjutDaftarToko from '../pages/SignupToko/lanjut';
+import InfoToko from '../pages/InfoToko';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -58,6 +57,7 @@ const HomeTab = () => {
     const role = await AsyncStorage.getItem('role');
     const status = await AsyncStorage.getItem('status');
     const token = await AsyncStorage.getItem('token');
+    // console.log(role + ' merupakan rolenya');
     setUserx({
       data: {
         id: id,
@@ -73,9 +73,14 @@ const HomeTab = () => {
   useEffect(() => {
     getAll();
     dispatch({type: 'SUCCES_LOGIN', payload: userx});
+    // console.log(userx);
   }, []);
-  console.log(userx.role);
-  const history = userx.role === 'Pengunjung' && (
+
+  useEffect(() => {
+    // console.log(userx);
+  }, [userx]);
+
+  const history = userx?.data?.role === 'Pengunjung' && (
     <Tab.Screen
       name="History"
       component={OrderHistory}
@@ -104,8 +109,8 @@ const HomeTab = () => {
         }}
       />
       <Tab.Screen
-        name={userx.role === 'Pengunjung' ? 'Product' : 'Store'}
-        component={userx.role === 'Pengunjung' ? ListProduct : MyStore}
+        name={userx?.data?.role === 'Pengunjung' ? 'Product' : 'Store'}
+        component={userx?.data?.role === 'Pengunjung' ? ListProduct : MyStore}
         options={{
           tabBarIcon: ({color, size}) => (
             <Fontawe5 name="store" color={color} size={size} />
@@ -193,13 +198,6 @@ const Router = () => {
         }}
       />
       <Stack.Screen
-        name="Artikel"
-        component={Artikel}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
         name="DetailProduk"
         component={DetailProduk}
         options={{
@@ -272,6 +270,13 @@ const Router = () => {
       <Stack.Screen
         name="ListProduct"
         component={ListProduct}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="InfoToko"
+        component={InfoToko}
         options={{
           headerShown: false,
         }}

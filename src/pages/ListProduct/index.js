@@ -10,14 +10,15 @@ import {
 import React from 'react';
 import notif from '../../assets/Icon/Notification.png';
 import Searching from '../../components/machine-search';
-import gbr1 from '../../assets/image/cilok.jpg';
-import IconNav from '../../components/icon-navbar';
 import CardProduct from '../../components/card-product';
 import sort from '../../assets/Icon/Sort.png';
 import map from '../../assets/Icon/Maps.png';
 import cate from '../../assets/Icon/Category.png';
+import {useSelector} from 'react-redux';
 
 const Produk = () => {
+  const allProduct = useSelector(state => state.productReducer.listProduct);
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
       <StatusBar barStyle="light-content" backgroundColor="#33907C" />
@@ -69,7 +70,17 @@ const Produk = () => {
             justifyContent: 'space-between',
             padding: 15,
           }}>
-          {/* <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" /> */}
+          {allProduct.map(val => {
+            return (
+              <CardProduct
+                key={val.id}
+                produkNama={val.product_name}
+                produkHarga={'Rp ' + val.price}
+                img={val.picture}
+                idP={val.id}
+              />
+            );
+          })}
         </View>
       </ScrollView>
     </SafeAreaView>

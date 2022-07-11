@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {
   Image,
@@ -16,11 +16,51 @@ import {useSelector} from 'react-redux';
 import map from '../../assets/Icon/Maps.png';
 import ButtonGreen from '../../components/button-green';
 import IconNav from '../../components/icon-navbar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Profile = () => {
   const infodataUser = useSelector(state => state.userReducer);
   const nav = useNavigation();
-  console.log('xxx', infodataUser);
+  const [alamat, setAlamat] = useState('');
+  const [userx, setUserx] = useState({
+    id: 0,
+    name: '',
+    phone: '',
+    email: '',
+    role: '',
+    status: '',
+    token: '',
+  });
+  const getAll = async () => {
+    const id = await AsyncStorage.getItem('idUser');
+    const name = await AsyncStorage.getItem('name');
+    const phone = await AsyncStorage.getItem('phone');
+    const email = await AsyncStorage.getItem('email');
+    const role = await AsyncStorage.getItem('role');
+    const status = await AsyncStorage.getItem('status');
+    const token = await AsyncStorage.getItem('token');
+    const Addrs = await AsyncStorage.getItem('currentAddress');
+    setUserx({
+      id: id,
+      name: name,
+      phone: phone,
+      email: email,
+      role: role,
+      status: status,
+      token: token,
+    });
+    setAlamat(Addrs);
+  };
+
+  useEffect(() => {
+    getAll();
+    // console.log(userx);
+  }, []);
+
+  useEffect(() => {
+    // console.log(userx);
+  }, [userx]);
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#E5E5E5'}}>
       <StatusBar barStyle="light-content" backgroundColor="#33907C" />
@@ -63,7 +103,7 @@ const Profile = () => {
               numberOfLines={1}
               ellipsizeMode="tail"
               style={{color: 'white'}}>
-              Jl. Dakota No. 8a Sukaraja Bandung, Jawa Barat, Indonesia
+              {alamat}
             </Text>
           </View>
         </View>
@@ -97,13 +137,11 @@ const Profile = () => {
               fontWeight: 'bold',
               fontSize: 20,
             }}>
-            {infodataUser.dataUser.data.name}
+            {userx?.name}
           </Text>
-          <Text style={{color: 'black'}}>
-            {infodataUser.dataUser.data.phone}
-          </Text>
+          <Text style={{color: 'black'}}>{userx?.phone}</Text>
           <Text numberOfLines={1} ellipsizeMode="tail" style={{color: 'black'}}>
-            {infodataUser.dataUser.data.email}
+            {userx?.email}
           </Text>
         </View>
       </View>
@@ -133,38 +171,6 @@ const Profile = () => {
           <ButtonGreen judul="Logout" p={45} l={300} />
         </View>
       </View>
-      {/* <View style={styles.navBottom}>
-        <IconNav
-          url={require('../../assets/Icon/home.png')}
-          teks="Home"
-          warna={'#4f4f4f'}
-          linkk={() => alert('Home')}
-        />
-        <IconNav
-          url={require('../../assets/Icon/search.png')}
-          teks="Jelajahi"
-          warna={'#4f4f4f'}
-          linkk={() => alert('Jelajahi')}
-        />
-        <IconNav
-          url={require('../../assets/Icon/store.png')}
-          teks="Store"
-          warna={'#4f4f4f'}
-          linkk={() => alert('Jelajahi')}
-        />
-        <IconNav
-          url={require('../../assets/Icon/order.png')}
-          teks="History"
-          warna={'#4f4f4f'}
-          linkk={() => alert('History')}
-        />
-        <IconNav
-          url={require('../../assets/Icon/profile-active.png')}
-          teks="Profil"
-          warna={'#33907C'}
-          linkk={() => alert('Profile')}
-        />
-      </View> */}
     </SafeAreaView>
   );
 };

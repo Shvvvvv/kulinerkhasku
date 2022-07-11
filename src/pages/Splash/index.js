@@ -12,11 +12,11 @@ import {loginUser} from '../../redux/actions';
 const Splash = ({navigation}) => {
   const dispatch = useDispatch();
   const navigateToLogin = () => {
-    navigation.navigate('Login');
+    navigation.replace('Login');
   };
 
   const navigateToHome = () => {
-    navigation.navigate('HomeTab');
+    navigation.replace('InfoToko');
   };
   const cekFirst = async () => {
     const is_first = await AsyncStorage.getItem('is_first');
@@ -48,6 +48,7 @@ const Splash = ({navigation}) => {
   useEffect(() => {
     setTimeout(() => {
       //Harusnya Login
+      // navigation.replace('Login');
       cekFirst();
     }, 5000);
   });
