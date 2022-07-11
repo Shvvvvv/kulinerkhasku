@@ -1,7 +1,10 @@
-import {StyleSheet} from 'react-native';
 import React from 'react';
+
+import {StyleSheet, TextInput} from 'react-native';
+
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {TextInput} from 'react-native-gesture-handler';
+
+// import {} from 'react-native-gesture-handler';
 import {lebar} from '../assets/style/Style';
 
 const Inputan = props => {

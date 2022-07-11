@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {
   Image,
   SafeAreaView,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -11,8 +12,8 @@ import {
 } from 'react-native';
 
 import {useNavigation} from '@react-navigation/core';
-import {ScrollView} from 'react-native-gesture-handler';
 
+// import {} from 'react-native-gesture-handler';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {Formik} from 'formik';
@@ -55,7 +56,7 @@ const Form = () => {
   const dispatch = useDispatch();
   const statusRegister = useSelector(state => state.userReducer);
   const nav = useNavigation();
-  
+
   useEffect(() => {
     if (statusRegister.registerUserData.status) {
       dispatch({

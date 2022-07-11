@@ -1,19 +1,23 @@
+import React from 'react';
+
 import {
+  Image,
+  ImageBackground,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
-  SafeAreaView,
-  StatusBar,
-  ScrollView,
-  ImageBackground,
-  Image,
 } from 'react-native';
-import React from 'react';
+
+import FontAwe5 from 'react-native-vector-icons/Ionicons';
+
+// import {} from 'react-native-gesture-handler';
+import kembali from '../../assets/Icon/Back.png';
 import cilok from '../../assets/image/cilok.jpg';
 import CardProduct from '../../components/card-product';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import kembali from '../../assets/Icon/Back.png';
-import FontAwe5 from 'react-native-vector-icons/Ionicons';
 
 const ListProductByToko = () => {
   return (

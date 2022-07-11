@@ -19,6 +19,8 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DatePicker from 'react-native-date-picker';
 import DocumentPicker from 'react-native-document-picker';
+import Geocoder from 'react-native-geocoder';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import ImagePicker from 'react-native-image-crop-picker';
 import MapView, {AnimatedRegion, MarkerAnimated} from 'react-native-maps';
 
@@ -41,7 +43,7 @@ const LanjutDaftarToko = ({navigation}) => {
   const [singleFile, setSingleFile] = useState('');
   //changed from useState to useRef
   const mapRef = useRef(null);
-  const [myMarker, setMyMarker] = useState(null);
+  const [myAddress, setMyAddress] = useState(null);
   const [coordinate, setCoordinate] = useState(
     new AnimatedRegion({
       latitude: 107.57147742604502,
@@ -50,6 +52,21 @@ const LanjutDaftarToko = ({navigation}) => {
       longitudeDelta: 0.012,
     }),
   );
+
+  const [region, setRegion] = useState({
+    mapRegion: null,
+    latitude: -6.894428621193786,
+    longitude: 107.57147742604502,
+  });
+
+  const onRegionChange = (region, latitude, longitude) => {
+    setRegion({
+      mapRegion: region,
+      // If there are no new values set the current ones
+      latitude: latitude || region.latitude,
+      longitude: longitude || region.longitude,
+    });
+  };
 
   const uploadImage = async () => {
     if (singleFile != null) {
@@ -72,32 +89,40 @@ const LanjutDaftarToko = ({navigation}) => {
   };
 
   const setCurrentCoordinate = async () => {
-    const coordLat = await AsyncStorage.getItem('latitude');
-    const coordLong = await AsyncStorage.getItem('longitude');
-    const num1 = Number(coordLat);
-    const num2 = Number(coordLong);
-    let newCoordinate = {
-      latitude: num1,
-      longitude: num2,
-      latitudeDelta: 0.012,
-      longitudeDelta: 0.012,
-    };
-    //camera will position itself to these coordinates.
-    const newCamera = {
-      center: {
-        latitude: num1,
-        longitude: num2,
-      },
-      pitch: 0,
-      heading: 0,
-      //zoom: 17  --Use it when required
-    };
-
-    if (myMarker) {
-      myMarker.animateMarkerToCoordinate(newCoordinate, 2000);
-      //camera type, `newCamera`, used inside animateCamera
-      mapRef.current.animateCamera(newCamera, {duration: 2000});
-    }
+    // const coordLat = await AsyncStorage.getItem('latitude');
+    // const coordLong = await AsyncStorage.getItem('longitude');
+    // const num1 = Number(coordLat);
+    // const num2 = Number(coordLong);
+    // let newCoordinate = {
+    //   latitude: region.latitude,
+    //   longitude: region.longitude,
+    //   latitudeDelta: 0.012,
+    //   longitudeDelta: 0.012,
+    // };
+    // //camera will position itself to these coordinates.
+    // const newCamera = {
+    //   center: {
+    //     latitude: region.latitude,
+    //     longitude: region.longitude,
+    //   },
+    //   pitch: 0,
+    //   heading: 0,
+    //   //zoom: 17  --Use it when required
+    // };
+    // if (myMarker) {
+    //   myMarker.animateMarkerToCoordinate(newCoordinate, 2000);
+    //   //camera type, `newCamera`, used inside animateCamera
+    //   mapRef.current.animateCamera(newCamera, {duration: 2000});
+    // }
+    Geocoder.geocodePosition({
+      lat: region.latitude,
+      lng: region.longitude,
+    }).then(results => {
+      let result = results[0];
+      let address = result.formattedAddress;
+      setMyAddress(address);
+      toggleModal();
+    });
   };
 
   const selectFile = async () => {
@@ -170,11 +195,7 @@ const LanjutDaftarToko = ({navigation}) => {
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
-  useEffect(() => {
-    console.log(mapRef);
-    console.log(myMarker);
-    setCurrentCoordinate();
-  }, [mapRef, myMarker, setCurrentCoordinate]);
+  useEffect(() => {}, []);
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="white" />
@@ -328,6 +349,7 @@ const LanjutDaftarToko = ({navigation}) => {
             textColor="#33907C"
             locale="id"
           />
+
           <Text style={{color: '#33907C', marginTop: 35, marginBottom: 15}}>
             Lokasi toko kamu
           </Text>
@@ -340,7 +362,9 @@ const LanjutDaftarToko = ({navigation}) => {
               marginBottom: 50,
             }}>
             <Text style={{color: 'black'}}>
-              Tandai lokasi kamu dalam peta agar memudahkan layanan navigasi
+              {myAddress === null
+                ? `Tandai lokasi kamu dalam peta agar memudahkan layanan navigasi`
+                : myAddress}
             </Text>
             <TouchableOpacity onPress={toggleModal}>
               <View
@@ -380,7 +404,7 @@ const LanjutDaftarToko = ({navigation}) => {
             <View
               style={{
                 width: lebar,
-                height: tinggi / 1.03,
+                height: tinggi / 1.1,
                 backgroundColor: 'white',
                 borderTopLeftRadius: 12,
                 borderTopRightRadius: 12,
@@ -392,7 +416,10 @@ const LanjutDaftarToko = ({navigation}) => {
                   height: 60,
                   position: 'relative',
                 }}>
-                <Text style={{color: 'black'}}>Lokasi toko kamu</Text>
+                <Text
+                  style={{color: 'black', fontWeight: 'bold', fontSize: 22}}>
+                  Lokasi toko kamu
+                </Text>
                 <View style={{position: 'absolute', right: 15}}>
                   <TouchableOpacity onPress={toggleModal}>
                     <Image
@@ -403,6 +430,39 @@ const LanjutDaftarToko = ({navigation}) => {
               </View>
               <View
                 style={{
+                  borderTopWidth: 1,
+                  borderBottomWidth: 1,
+                  borderColor: '#CBCBCC',
+                  marginTop: 10,
+                  paddingHorizontal: 10,
+                  height: 50,
+                }}>
+                <GooglePlacesAutocomplete
+                  predefinedPlacesAlwaysVisible={true}
+                  placeholder="Enter Location"
+                  minLength={2}
+                  autoFocus={false}
+                  fetchDetails
+                  listViewDisplayed="auto"
+                  query={{
+                    key: 'AIzaSyDLgNPsDb1iKk09vm1qAhyJWpR03TZMbD0',
+                    language: 'id',
+                    types: 'geocode',
+                  }}
+                  currentLocation={false}
+                  onPress={(data, details = null) => {
+                    const region = {
+                      latitude: details.geometry.location.lat,
+                      longitude: details.geometry.location.lng,
+                      latitudeDelta: 0.00922 * 1.5,
+                      longitudeDelta: 0.00421 * 1.5,
+                    };
+                    onRegionChange(region, region.latitude, region.longitude);
+                  }}
+                />
+              </View>
+              <View
+                style={{
                   padding: 20,
                   borderTopWidth: 1,
                   borderBottomWidth: 1,
@@ -410,33 +470,19 @@ const LanjutDaftarToko = ({navigation}) => {
                 }}>
                 <View
                   style={{
-                    backgroundColor: '#F5F2FC',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    alignSelf: 'center',
-                    borderRadius: 10,
-                    paddingHorizontal: 10,
-                  }}>
-                  <TextInput
-                    style={{
-                      flex: 1,
-                      color: 'black',
-                      marginRight: 3,
-                    }}
-                  />
-                  <Image source={carii} style={{height: 30, width: 30}} />
-                </View>
-                <View
-                  style={{
-                    backgroundColor: 'pink',
-                    height: tinggi / 1.5,
-                    marginTop: 10,
+                    backgroundColor: 'gray',
+                    height: tinggi / 1.8,
                     borderRadius: 10,
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
                   <MapView
-                    ref={mapRef} //There is also change here
+                    // style={{ flex: 1, width: window.width }
+                    // region={region.mapRegion}
+                    // onRegionChange={regions => {
+                    //   setRegion({mapRegion: regions});
+                    //   console.log('ini region', regions);
+                    // }}
                     style={styles.map}
                     initialRegion={{
                       latitude: -6.894428621193786,
@@ -444,27 +490,30 @@ const LanjutDaftarToko = ({navigation}) => {
                       latitudeDelta: 0.012,
                       longitudeDelta: 0.012,
                     }}
-                    //These are newly added
-                    pitchEnabled={false}
-                    zoomEnabled={false}>
+                    onPress={e => {
+                      const region = {
+                        latitude: e.nativeEvent.coordinate.latitude,
+                        longitude: e.nativeEvent.coordinate.longitude,
+                        latitudeDelta: 0.00922 * 1.5,
+                        longitudeDelta: 0.00421 * 1.5,
+                      };
+                      console.log('ini on press', e.nativeEvent.coordinate);
+                      onRegionChange(region, region.latitude, region.longitude);
+                    }}>
                     <MarkerAnimated
-                      ref={marker => {
-                        setMyMarker(marker);
-                      }}
                       image={require('../../assets/logo/logoMap.png')}
-                      coordinate={coordinate}
+                      coordinate={{
+                        latitude: region.latitude,
+                        longitude: region.longitude,
+                      }}
                       style={{width: 20, height: 20}}
+                      title="Lokasi toko kamu"
+                      description="Tandai lokasi toko kamu dengan akurat ya"
                     />
                   </MapView>
                 </View>
               </View>
-              <View style={{padding: 20}}>
-                {/* <TouchableOpacity
-                    onPress={() => animateMarkerAndCamera()}
-                    style={[styles.bubble, styles.button]}
-                >
-                    <Text>Animate</Text>
-                </TouchableOpacity> */}
+              <View style={{padding: 20, height: tinggi / 10, flex: 1}}>
                 <ButtonGreen
                   judul="Gunakan lokasi ini"
                   p={40}
@@ -520,6 +569,6 @@ const styles = StyleSheet.create({
   camera: {width: 50, height: 50, marginBottom: 15, alignSelf: 'center'},
   map: {
     width: lebar / 1.1,
-    height: tinggi / 1.5,
+    height: tinggi / 1.8,
   },
 });

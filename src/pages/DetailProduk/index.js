@@ -36,7 +36,7 @@ const DetailProduk = ({navigation, route}) => {
         }}>
         <TouchableOpacity
           onPress={() => {
-            // navigation.goBack();
+            navigation.goBack();
           }}>
           <View>
             <Image source={kembali} style={{height: 35, width: 35, top: 5}} />
