@@ -51,23 +51,28 @@ const HomeDashboard = ({navigation}) => {
   };
 
   const getAll = async () => {
-    const id = await AsyncStorage.getItem('idUser');
-    const name = await AsyncStorage.getItem('name');
-    const phone = await AsyncStorage.getItem('phone');
-    const email = await AsyncStorage.getItem('email');
-    const role = await AsyncStorage.getItem('role');
-    const status = await AsyncStorage.getItem('status');
-    const token = await AsyncStorage.getItem('token');
-    const Addrs = await AsyncStorage.getItem('currentAddress');
-    setUserx({
-      id: id,
-      name: name,
-      phone: phone,
-      email: email,
-      role: role,
-      status: status,
-      token: token,
+    await AsyncStorage.getItem('dataLogin', (error, result) => {
+      if (result) {
+        let data = JSON.parse(result);
+        setUserx({
+          id: data.id,
+          name: data.name,
+          phone: data.phone,
+          email: data.email,
+          role: data.role,
+          status: data.status,
+          token: data.token,
+        });
+      }
     });
+    // const id = await AsyncStorage.getItem('idUser');
+    // const name = await AsyncStorage.getItem('name');
+    // const phone = await AsyncStorage.getItem('phone');
+    // const email = await AsyncStorage.getItem('email');
+    // const role = await AsyncStorage.getItem('role');
+    // const status = await AsyncStorage.getItem('status');
+    // const token = await AsyncStorage.getItem('token');
+    const Addrs = await AsyncStorage.getItem('currentAddress');
     setAlamat(Addrs);
   };
 
@@ -86,7 +91,7 @@ const HomeDashboard = ({navigation}) => {
             <Image source={notif} style={{width: 24, height: 24}} />
           </View>
         </View>
-        <Searching />
+        <Searching goto="HasilPencarian" />
         <View
           style={{
             height: '23%',
@@ -145,7 +150,7 @@ const HomeDashboard = ({navigation}) => {
                     produkNama={val.product_name}
                     produkHarga={'Rp ' + val.price}
                     img={val.picture}
-                    idP={val.id}
+                    onPress={() => navToDetailStore(val.id, val.store_id)}
                   />
                 );
               })}

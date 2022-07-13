@@ -27,11 +27,9 @@ export const loginUser = param => dispatch => {
   axios
     .post(API_KULINER + 'api/user/login', param)
     .then(async result => {
-      // console.log(result.data.data.token);
-      console.log(result.data);
       if (result.data.status) {
         Notifier.showNotification({
-          title: 'Login gagal',
+          title: 'Login Berhasill',
           description: result.data.message,
           duration: 3000,
           showAnimationDuration: 800,
@@ -45,14 +43,18 @@ export const loginUser = param => dispatch => {
           },
         });
         dispatch({type: 'SUCCES_LOGIN', payload: result.data});
+        await AsyncStorage.mergeItem(
+          'dataLogin',
+          JSON.stringify(result.data.data),
+        );
         // await AsyncStorage.mergeItem(
         //   'idUser',
         //   JSON.stringify(result.data.data.id),
         // );
         // await AsyncStorage.mergeItem('name', result.data.data.name);
         // await AsyncStorage.mergeItem('phone', result.data.data.phone);
-        // await AsyncStorage.mergeItem('email', result.data.data.email);
         // await AsyncStorage.mergeItem('role', result.data.data.role);
+        // await AsyncStorage.mergeItem('email', result.data.data.email);
         // await AsyncStorage.mergeItem('status', result.data.data.status);
         // await AsyncStorage.mergeItem('token', result.data.data.token);
       } else {
@@ -75,7 +77,6 @@ export const loginUser = param => dispatch => {
       // dispatch({type: 'SUCCES_LOGIN', payload: result.data});
     })
     .catch(error => {
-      // console.log('Putri');
       console.log(error);
     });
 };
@@ -87,30 +88,23 @@ export const reloginUser = param => dispatch => {
       dispatch({type: 'SUCCES_LOGIN', payload: result.data});
     })
     .catch(error => {
-      // console.log('Putri');
       console.log(error);
     });
 };
 
-export const doLogoutUser = param => {
+export const doLogoutUser = (token, nav) => {
   axios
-    .post(API_KULINER, param)
+    .get(API_KULINER + 'api/user/logout', {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    })
     .then(result => {
-      console.log('');
+      AsyncStorage.clear();
+      nav.replace('Login');
     })
     .catch(error => {
       console.log('');
-    });
-};
-
-export const signupToko = param => dispatch => {
-  axios
-    .post(API_KULINER, param)
-    .then(result => {
-      dispatch({type: 'SUCCESS_REGISTER_TOKO', payload: result.data});
-    })
-    .catch(error => {
-      console.log(error);
     });
 };
 
@@ -137,26 +131,21 @@ export const getProductById = (id, token) => dispatch => {
       dispatch({type: 'GET_PRODUCT_BY_ID', payload: result.data.data});
     })
     .catch(error => {
-      console.log('Ggl');
       console.log(error);
     });
 };
 
 export const getStoreById = (id, token) => dispatch => {
   axios
-    .get(
-      'https://hashtagkulinerkhasku.000webhostapp.com/public/api/store/' + id,
-      {
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
+    .get(API_KULINER + 'api/store/' + id, {
+      headers: {
+        Authorization: 'Bearer ' + token,
       },
-    )
+    })
     .then(result => {
-      dispatch({type: 'GET_STORE_BY_ID', payload: result.data.data});
+      dispatch({type: 'GET_PRODUCT_BY_ID', payload: result.data.data});
     })
     .catch(error => {
-      console.log('gagal');
       console.log(error);
     });
 };

@@ -48,26 +48,41 @@ const HomeTab = () => {
     status: '',
     token: '',
   });
-  const user = useSelector(state => state.userReducer.dataUser.data);
+  // const user = useSelector(state => state.userReducer.dataUser.data);
   const getAll = async () => {
-    const id = await AsyncStorage.getItem('idUser');
-    const name = await AsyncStorage.getItem('name');
-    const phone = await AsyncStorage.getItem('phone');
-    const email = await AsyncStorage.getItem('email');
-    const role = await AsyncStorage.getItem('role');
-    const status = await AsyncStorage.getItem('status');
-    const token = await AsyncStorage.getItem('token');
-    // console.log(role + ' merupakan rolenya');
-    setUserx({
-      data: {
-        id: id,
-        name: name,
-        phone: phone,
-        email: email,
-        role: role,
-        status: status,
-        token: token,
-      },
+    // const id = await AsyncStorage.getItem('idUser');
+    // const name = await AsyncStorage.getItem('name');
+    // const phone = await AsyncStorage.getItem('phone');
+    // const email = await AsyncStorage.getItem('email');
+    // const role = await AsyncStorage.getItem('role');
+    // const status = await AsyncStorage.getItem('status');
+    // const token = await AsyncStorage.getItem('token');
+    // // console.log(role + ' merupakan rolenya');
+    // setUserx({
+    //   data: {
+    //     id: id,
+    //     name: name,
+    //     phone: phone,
+    //     email: email,
+    //     role: role,
+    //     status: status,
+    //     token: token,
+    //   },
+    // });
+    await AsyncStorage.getItem('dataLogin', (error, result) => {
+      if (result) {
+        let data = JSON.parse(result);
+        console.log(data);
+        setUserx({
+          id: data.id,
+          name: data.name,
+          phone: data.phone,
+          email: data.email,
+          role: data.role,
+          status: data.status,
+          token: data.token,
+        });
+      }
     });
   };
   useEffect(() => {
@@ -80,10 +95,10 @@ const HomeTab = () => {
     // console.log(userx);
   }, [userx]);
 
-  const history = userx?.data?.role === 'Pengunjung' && (
+  const history = userx?.role === 'Pengunjung' && (
     <Tab.Screen
       name="History"
-      component={OrderHistory}
+      component={HasilPencarian}
       options={{
         tabBarIcon: ({color, size}) => (
           <Fontawe5 name="clipboard-list" color={color} size={size} />
@@ -109,8 +124,8 @@ const HomeTab = () => {
         }}
       />
       <Tab.Screen
-        name={userx?.data?.role === 'Pengunjung' ? 'Product' : 'Store'}
-        component={userx?.data?.role === 'Pengunjung' ? ListProduct : MyStore}
+        name={userx?.role === 'Pengunjung' ? 'Product' : 'Store'}
+        component={userx?.role === 'Pengunjung' ? ListProduct : MyStore}
         options={{
           tabBarIcon: ({color, size}) => (
             <Fontawe5 name="store" color={color} size={size} />

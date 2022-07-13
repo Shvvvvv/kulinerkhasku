@@ -10,21 +10,27 @@ import logo from '../../assets/logo/logo.png';
 import {loginUser} from '../../redux/actions';
 
 const Splash = ({navigation}) => {
+  let data = '';
   const dispatch = useDispatch();
   const navigateToLogin = () => {
     navigation.replace('Login');
   };
 
   const navigateToHome = () => {
-    navigation.replace('InfoToko');
+    navigation.replace('HomeTab');
   };
   const cekFirst = async () => {
     const is_first = await AsyncStorage.getItem('is_first');
-    const is_login = await AsyncStorage.getItem('token');
-    const email = await AsyncStorage.getItem('email');
-    const pass = await AsyncStorage.getItem('password');
+    await AsyncStorage.getItem('dataLogin', (error, result) => {
+      if (result) {
+        data = JSON.parse(result);
+      }
+    });
+    // const is_login = await AsyncStorage.getItem('token');
+    // const email = await AsyncStorage.getItem('email');
+    // const pass = await AsyncStorage.getItem('password');
     // console.log('ini token:', valueJson);
-    if (is_first && !!is_login) {
+    if (is_first && !!data.token) {
       // console.log
       // dispatch(
       //   loginUser({

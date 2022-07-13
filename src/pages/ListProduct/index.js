@@ -6,8 +6,10 @@ import {
   StatusBar,
   ScrollView,
   Image,
+  TouchableOpacity,
+  TextInput,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import notif from '../../assets/Icon/Notification.png';
 import Searching from '../../components/machine-search';
 import CardProduct from '../../components/card-product';
@@ -15,10 +17,20 @@ import sort from '../../assets/Icon/Sort.png';
 import map from '../../assets/Icon/Maps.png';
 import cate from '../../assets/Icon/Category.png';
 import {useSelector} from 'react-redux';
+import {lebar} from '../../assets/style/Style';
+import cari from '../../assets/Icon/pencarian.png';
 
 const Produk = () => {
+  const [carii, setCari] = useState('');
+  const sortProduk = [];
   const allProduct = useSelector(state => state.productReducer.listProduct);
-
+  allProduct.map(val => {
+    if (val.product_name.toLowerCase().indexOf(carii.toLowerCase()) === -1) {
+      return;
+    } else {
+      sortProduk.push(val);
+    }
+  });
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
       <StatusBar barStyle="light-content" backgroundColor="#33907C" />
@@ -29,7 +41,23 @@ const Produk = () => {
             <Image source={notif} style={{width: 24, height: 24}} />
           </View>
         </View>
-        <Searching />
+        <View style={styles.container}>
+          <TouchableOpacity>
+            <Image
+              source={cari}
+              style={{width: 24, height: 24, marginRight: 12}}
+            />
+          </TouchableOpacity>
+          <TextInput
+            placeholder="Cari Makanan"
+            placeholderTextColor="#7f7f7f"
+            style={styles.inputan}
+            value={carii}
+            onChangeText={val => {
+              setCari(val);
+            }}
+          />
+        </View>
         <View
           style={{
             flex: 1,
@@ -43,21 +71,21 @@ const Produk = () => {
               source={sort}
               style={{width: 20, height: 20, marginRight: 10}}
             />
-            <Text>Sort by</Text>
+            <Text style={{color: 'white'}}>Sort by</Text>
           </View>
           <View style={styles.button}>
             <Image
               source={map}
               style={{width: 20, height: 20, marginRight: 10}}
             />
-            <Text>Lokasi</Text>
+            <Text style={{color: 'white'}}>Lokasi</Text>
           </View>
           <View style={styles.button}>
             <Image
               source={cate}
               style={{width: 20, height: 20, marginRight: 10}}
             />
-            <Text>Kategori</Text>
+            <Text style={{color: 'white'}}>Kategori</Text>
           </View>
         </View>
       </View>
@@ -70,7 +98,7 @@ const Produk = () => {
             justifyContent: 'space-between',
             padding: 15,
           }}>
-          {allProduct.map(val => {
+          {sortProduk.map(val => {
             return (
               <CardProduct
                 key={val.id}
@@ -141,5 +169,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     paddingHorizontal: 15,
+  },
+  container: {
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 50,
+    paddingHorizontal: 15,
+    width: lebar / 1.1,
+    alignSelf: 'center',
+    height: 40,
+  },
+  inputan: {
+    color: '#4F4F4F',
+    fontFamily: 'Montserrat-SemiBold',
+    fontSize: 14,
+    width: lebar / 1.4,
   },
 });

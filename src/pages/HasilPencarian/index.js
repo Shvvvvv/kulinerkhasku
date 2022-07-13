@@ -14,8 +14,18 @@ import CardProduct from '../../components/card-product';
 import map from '../../assets/Icon/Maps.png';
 import {useSelector} from 'react-redux';
 
-const HasilPencarian = () => {
+const HasilPencarian = ({route}) => {
   const allProduct = useSelector(state => state.productReducer.listProduct);
+  const {cari} = route.params;
+  const sort = [];
+  allProduct.map(val => {
+    if (val.product_name.toLowerCase().indexOf(cari.toLowerCase()) === -1) {
+      return;
+    } else {
+      sort.push(val);
+    }
+  });
+  console.log(sort);
   return (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="light-content" backgroundColor="#33907C" />
@@ -26,7 +36,7 @@ const HasilPencarian = () => {
             <Image source={notif} style={{width: 24, height: 24}} />
           </View>
         </View>
-        <Searching />
+        <Searching teks={cari} />
         <View
           style={{
             flex: 1,
@@ -35,13 +45,13 @@ const HasilPencarian = () => {
             marginTop: 10,
             paddingHorizontal: 20,
           }}>
-          <View style={styles.button}>
+          {/* <View style={styles.button}>
             <Image
               source={map}
               style={{width: 20, height: 20, marginRight: 10}}
             />
             <Text>Lokasi</Text>
-          </View>
+          </View> */}
         </View>
       </View>
       <ScrollView style={styles.konten}>
@@ -53,17 +63,23 @@ const HasilPencarian = () => {
             justifyContent: 'space-between',
             padding: 15,
           }}>
-          {allProduct.map(val => {
-            return (
-              <CardProduct
-                key={val.id}
-                produkNama={val.product_name}
-                produkHarga={'Rp ' + val.price}
-                img={val.picture}
-                idP={val.id}
-              />
-            );
-          })}
+          {sort[0] ? (
+            sort.map(val => {
+              return (
+                <CardProduct
+                  key={val.id}
+                  produkNama={val.product_name}
+                  produkHarga={'Rp ' + val.price}
+                  img={val.picture}
+                  idP={val.id}
+                />
+              );
+            })
+          ) : (
+            <Text style={{color: 'grey', width: '100%', textAlign: 'center'}}>
+              Product Not Found
+            </Text>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

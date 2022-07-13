@@ -1,25 +1,39 @@
-import {StyleSheet, Text, View, Image, TextInput} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import cari from '../assets/Icon/pencarian.png';
 import {lebar} from '../assets/style/Style';
+import {useNavigation} from '@react-navigation/native';
 
-const Searching = () => {
+const Searching = props => {
   const [carii, setCari] = useState('');
+  const nav = useNavigation();
+
+  function handleClick() {
+    nav.navigate('HasilPencarian', {cari: carii});
+  }
 
   useEffect(() => {
-    console.log(cari);
+    setCari(props.teks);
   }, []);
 
   return (
     <View style={styles.container}>
-      <Image source={cari} style={{width: 24, height: 24, marginRight: 12}} />
+      <TouchableOpacity onPress={handleClick}>
+        <Image source={cari} style={{width: 24, height: 24, marginRight: 12}} />
+      </TouchableOpacity>
       <TextInput
         placeholder="Cari Makanan"
         placeholderTextColor="#7f7f7f"
         style={styles.inputan}
         value={carii}
         onChangeText={val => {
-          console.log(val);
           setCari(val);
         }}
       />

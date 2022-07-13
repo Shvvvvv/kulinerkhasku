@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
 import {
+  Alert,
   Image,
   SafeAreaView,
   StatusBar,
@@ -17,6 +18,7 @@ import map from '../../assets/Icon/Maps.png';
 import ButtonGreen from '../../components/button-green';
 import IconNav from '../../components/icon-navbar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {doLogoutUser} from '../../redux/actions';
 
 const Profile = () => {
   const infodataUser = useSelector(state => state.userReducer);
@@ -32,23 +34,22 @@ const Profile = () => {
     token: '',
   });
   const getAll = async () => {
-    const id = await AsyncStorage.getItem('idUser');
-    const name = await AsyncStorage.getItem('name');
-    const phone = await AsyncStorage.getItem('phone');
-    const email = await AsyncStorage.getItem('email');
-    const role = await AsyncStorage.getItem('role');
-    const status = await AsyncStorage.getItem('status');
-    const token = await AsyncStorage.getItem('token');
-    const Addrs = await AsyncStorage.getItem('currentAddress');
-    setUserx({
-      id: id,
-      name: name,
-      phone: phone,
-      email: email,
-      role: role,
-      status: status,
-      token: token,
+    await AsyncStorage.getItem('dataLogin', (error, result) => {
+      if (result) {
+        let data = JSON.parse(result);
+        console.log(data);
+        setUserx({
+          id: data.id,
+          name: data.name,
+          phone: data.phone,
+          email: data.email,
+          role: data.role,
+          status: data.status,
+          token: data.token,
+        });
+      }
     });
+    const Addrs = await AsyncStorage.getItem('currentAddress');
     setAlamat(Addrs);
   };
 
@@ -168,7 +169,29 @@ const Profile = () => {
               nav.navigate('EditProfile');
             }}
           />
-          <ButtonGreen judul="Logout" p={45} l={300} />
+          <ButtonGreen
+            judul="Logout"
+            p={45}
+            l={300}
+            submitting={false}
+            link={() => {
+              Alert.alert(
+                'LOGOUT',
+                'Apakah anda yakin untuk logout?',
+                [
+                  {
+                    text: 'Iya',
+                    onPress: () => {
+                      doLogoutUser(userx?.token, nav);
+                    },
+                    style: 'cancel',
+                  },
+                  {text: 'Tidak', onPress: () => {}},
+                ],
+                {cancelable: false},
+              );
+            }}
+          />
         </View>
       </View>
     </SafeAreaView>

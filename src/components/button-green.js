@@ -18,7 +18,7 @@ const ButtonGreen = ({link, p, l, judul, submitting, ...rest}) => {
         <View
           style={[
             styles.button,
-            {height: p, width: l, backgroundColor: bgColor},
+            {height: p, width: l, backgroundColor: bgColor, ...rest},
           ]}>
           <Text style={styles.tex}>{judul}</Text>
         </View>

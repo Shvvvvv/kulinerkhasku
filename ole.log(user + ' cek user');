@@ -1,0 +1,37 @@
+[33mcommit 7bc6a842d9365da9d760ecb6f40c2b2206e391c2[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;32mcoba-persist[m[33m)[m
+Merge: db01140 bbc4939
+Author: Ari Sandi SM <arisandishevamaldini@gmail.com>
+Date:   Sun Jul 10 14:33:44 2022 +0700
+
+    solve migran user from redux to user, solve tampilan beda ukuran layar
+
+[33mcommit db01140d825ba7be921bb0d12b20940a26642901[m
+Author: Ari Sandi SM <arisandishevamaldini@gmail.com>
+Date:   Sun Jul 10 11:02:18 2022 +0700
+
+    p
+
+[33mcommit bbc4939eed4184d2a3037436f84bdde1033355d9[m
+Author: Herdiana <herdiana.zz@weekendinc.com>
+Date:   Sun Jul 10 10:57:27 2022 +0700
+
+    ⚙️ Add Current Location and Maps (Geolocation, Geocoder, MapsGoogle)
+    ⚙️ Add AsyncStorage
+
+[33mcommit 6293f80e6c23552a49d8dc504aeba7efd849755e[m
+Author: Ari Sandi SM <arisandishevamaldini@gmail.com>
+Date:   Sat Jul 9 21:22:12 2022 +0700
+
+    baru lagi
+
+[33mcommit 9de33e38bb446f46bd2f0f7243ef97ea9e495740[m
+Author: Ari Sandi SM <arisandishevamaldini@gmail.com>
+Date:   Thu Jul 7 10:53:43 2022 +0700
+
+    terbaru
+
+[33mcommit f90d9821dba2e58609c759b22c848ab45e7f0930[m
+Author: Ari Sandi SM <arisandishevamaldini@gmail.com>
+Date:   Thu Jun 30 00:53:34 2022 +0700
+
+    produk,profil,detailProduk,editProfil,hasilPencarian
