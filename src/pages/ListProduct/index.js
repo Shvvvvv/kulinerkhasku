@@ -9,21 +9,36 @@ import {
   TouchableOpacity,
   TextInput,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import notif from '../../assets/Icon/Notification.png';
 import Searching from '../../components/machine-search';
 import CardProduct from '../../components/card-product';
 import sort from '../../assets/Icon/Sort.png';
 import map from '../../assets/Icon/Maps.png';
 import cate from '../../assets/Icon/Category.png';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {lebar} from '../../assets/style/Style';
 import cari from '../../assets/Icon/pencarian.png';
+import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getProductById, getStoreById} from '../../redux/actions';
 
 const Produk = () => {
   const [carii, setCari] = useState('');
   const sortProduk = [];
   const allProduct = useSelector(state => state.productReducer.listProduct);
+  const dispatch = useDispatch();
+  const nav = useNavigation();
+  const [userx, setUserx] = useState({
+    id: 0,
+    name: '',
+    phone: '',
+    email: '',
+    role: '',
+    status: '',
+    token: '',
+  });
+
   allProduct.map(val => {
     if (val.product_name.toLowerCase().indexOf(carii.toLowerCase()) === -1) {
       return;
@@ -31,6 +46,34 @@ const Produk = () => {
       sortProduk.push(val);
     }
   });
+
+  const getAll = async () => {
+    await AsyncStorage.getItem('dataLogin', (error, result) => {
+      if (result) {
+        let data = JSON.parse(result);
+        setUserx({
+          id: data.id,
+          name: data.name,
+          phone: data.phone,
+          email: data.email,
+          role: data.role,
+          status: data.status,
+          token: data.token,
+        });
+      }
+    });
+  };
+
+  const navToDetailStore = async (idProduct, idStore) => {
+    await dispatch(getProductById(idProduct, userx.token));
+    await dispatch(getStoreById(idStore, userx.token));
+    nav.navigate('DetailProduk');
+  };
+
+  useEffect(() => {
+    getAll();
+  }, []);
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
       <StatusBar barStyle="light-content" backgroundColor="#33907C" />
@@ -105,7 +148,7 @@ const Produk = () => {
                 produkNama={val.product_name}
                 produkHarga={'Rp ' + val.price}
                 img={val.picture}
-                idP={val.id}
+                onPress={() => navToDetailStore(val.id, val.store_id)}
               />
             );
           })}

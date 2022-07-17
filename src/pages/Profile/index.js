@@ -37,7 +37,6 @@ const Profile = () => {
     await AsyncStorage.getItem('dataLogin', (error, result) => {
       if (result) {
         let data = JSON.parse(result);
-        console.log(data);
         setUserx({
           id: data.id,
           name: data.name,

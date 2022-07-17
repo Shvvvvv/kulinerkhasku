@@ -1,7 +1,9 @@
-import {GET_STORE_BY_ID} from '../types';
+import {GET_RATING_STORE, GET_STORE_BY_ID} from '../types';
 
 const initialState = {
   store: {},
+  rating: [],
+  topRating: [],
 };
 
 const storeReducers = (state = initialState, action) => {
@@ -10,6 +12,16 @@ const storeReducers = (state = initialState, action) => {
       return {
         ...state,
         store: action.payload,
+      };
+    case GET_RATING_STORE:
+      return {
+        ...state,
+        rating: action.payload,
+      };
+    case 'GET_TOP_RATING':
+      return {
+        ...state,
+        topRating: action.payload,
       };
     default:
       return {

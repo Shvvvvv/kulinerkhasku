@@ -1,6 +1,7 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {
+  ActivityIndicator,
   Image,
   Modal,
   StatusBar,
@@ -17,7 +18,6 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {Formik} from 'formik';
-import {useState} from 'react/cjs/react.development';
 import * as Yup from 'yup';
 
 import logo from '../../assets/logo/logo2.png';
@@ -34,6 +34,7 @@ const validationSchema = Yup.object({
     .required('Email harus diisi!'),
   password: Yup.string().trim().required('Password harus diisi!'),
 });
+
 const Form = () => {
   const inputData = {
     email: '',
@@ -41,14 +42,15 @@ const Form = () => {
   };
   const nav = useNavigation();
   const dispatch = useDispatch();
-  const infodataUser = useSelector(state => state.userReducer);
+  const infoDataUser = useSelector(state => state.userReducer);
   useEffect(() => {
-    if (infodataUser.dataUser.status) {
+    if (infoDataUser.dataUser.status) {
       nav.navigate('HomeTab');
     }
-  });
+  }, [infoDataUser]);
 
   const onSubmit = (email, password) => {
+    // setAct(!act);
     dispatch(
       loginUser({
         email: email,
@@ -117,6 +119,7 @@ const Form = () => {
 
 const Login = ({navigation}) => {
   let [show, setShow] = useState(false);
+  const [act, setAct] = useState(false);
   const loginState = useSelector(state => state.LoginReducer);
 
   const Popup = () => {
@@ -189,7 +192,7 @@ const Login = ({navigation}) => {
           Ayo login dengan akun mu
         </Text>
         <Form />
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
           <Text style={[styles.text2, {marginTop: 32.5}]}>Lupa password ?</Text>
         </TouchableOpacity>
         <View style={{flexDirection: 'row'}}>

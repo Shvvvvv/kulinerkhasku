@@ -1,8 +1,10 @@
-import React, {useEffect} from 'react';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {useEffect, useState} from 'react';
 import {
+  ActivityIndicator,
   Image,
   ImageBackground,
+  Modal,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -11,17 +13,51 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-
-import {useDispatch, useSelector} from 'react-redux';
-
+import {useSelector} from 'react-redux';
 import kembali from '../../assets/Icon/Back.png';
-import cilok from '../../assets/image/cilok.jpg';
+import {lebar, tinggi} from '../../assets/style/Style';
 import ButtonGreen from '../../components/button-green';
 
-const DetailProduk = ({navigation, route}) => {
-  // const {idProduct} = route.params;
-  const product = useSelector(state => state.productReducer.product);
-  const store = useSelector(state => state.storeReducers.store);
+const DetailProduk = ({navigation}) => {
+  // const [product, setProduct] = useState('');
+  // const [store, setStore] = useState('');
+  const produk = useSelector(state => state.productReducer.product);
+  const toko = useSelector(state => state.storeReducers.store);
+
+  // const getProduct = async () => {
+  //   await AsyncStorage.getItem('product', (error, result) => {
+  //     if (result) {
+  //       let data = JSON.parse(result);
+  //       console.log(data);
+  //       setProduct({
+  //         productName: data.product_name,
+  //         price: data.price,
+  //         picture: data.picture,
+  //         description: data.description,
+  //         typeFood: data.type_food,
+  //         area: data.area,
+  //         status: data.status,
+  //       });
+  //     }
+  //   });
+  // };
+
+  // const getStore = async () => {
+  //   await AsyncStorage.getItem('store', (error, result) => {
+  //     if (result) {
+  //       let data = JSON.parse(result);
+  //       setStore({
+  //         id: data.id,
+  //         storeName: data.store_name,
+  //       });
+  //     }
+  //   });
+  // };
+
+  // useEffect(() => {
+  //   getProduct();
+  //   getStore();
+  // }, []);
 
   return (
     <SafeAreaView>
@@ -39,14 +75,17 @@ const DetailProduk = ({navigation, route}) => {
             navigation.goBack();
           }}>
           <View>
-            <Image source={kembali} style={{height: 35, width: 35, top: 5}} />
+            <Image
+              source={kembali}
+              style={{height: 35, width: 35, top: 5, marginLeft: 10}}
+            />
           </View>
         </TouchableOpacity>
       </View>
       <ScrollView>
         <View style={{height: 225, width: '100%'}}>
           <ImageBackground
-            source={{uri: product.picture}}
+            source={{uri: produk.picture}}
             resizeMode="cover"
             style={{
               height: '100%',
@@ -56,19 +95,25 @@ const DetailProduk = ({navigation, route}) => {
         </View>
         <View style={styles.containerProduk}>
           <Text style={{color: 'black', fontSize: 18, fontWeight: 'bold'}}>
-            {product.product_name}
+            {produk.product_name}
           </Text>
           <Text style={{color: '#33907C', fontSize: 18, fontWeight: 'bold'}}>
-            {'Rp ' + product.price + ',-'}
+            {'Rp ' + produk.price + ',-'}
           </Text>
         </View>
         <View style={styles.containerToko}>
-          <Text style={{color: 'black', fontSize: 18}}>{store.store_name}</Text>
-          <ButtonGreen p={30} l={110} judul="Kunjungi" />
+          <Text style={{color: 'black', fontSize: 18}}>{toko.store_name}</Text>
+          <ButtonGreen
+            p={30}
+            l={110}
+            judul="Kunjungi"
+            submitting={false}
+            link={() => navigation.navigate('ListProductByToko')}
+          />
         </View>
         <View style={styles.containerDeskripsi}>
           <Text style={styles.txtDesk}>Deskripsi Produk</Text>
-          <Text style={{color: 'black'}}>{product.description}</Text>
+          <Text style={{color: 'black'}}>{produk.description}</Text>
         </View>
         <View style={styles.containerInfo}>
           <Text style={styles.txtDesk}>Informasi Produk</Text>
@@ -82,15 +127,15 @@ const DetailProduk = ({navigation, route}) => {
               ]}>
               Area{' '}
             </Text>
-            <Text style={styles.teks}>{': ' + product.area}</Text>
+            <Text style={styles.teks}>{': ' + produk.area}</Text>
           </View>
           <View style={{flexDirection: 'row', paddingHorizontal: 20}}>
             <Text style={[styles.teks, {marginRight: 56}]}>Kategori </Text>
-            <Text style={styles.teks}>{': ' + product.type_food}</Text>
+            <Text style={styles.teks}>{': ' + produk.type_food}</Text>
           </View>
           <View style={{flexDirection: 'row', paddingHorizontal: 20}}>
             <Text style={[styles.teks, {marginRight: 68}]}>Status </Text>
-            <Text style={styles.teks}>{': ' + product.status}</Text>
+            <Text style={styles.teks}>{': ' + produk.status}</Text>
           </View>
         </View>
       </ScrollView>

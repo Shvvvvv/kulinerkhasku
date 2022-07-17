@@ -7,17 +7,31 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import notif from '../../assets/Icon/Notification.png';
 import Searching from '../../components/machine-search';
 import CardProduct from '../../components/card-product';
 import map from '../../assets/Icon/Maps.png';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
+import {getProductById, getStoreById} from '../../redux/actions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HasilPencarian = ({route}) => {
   const allProduct = useSelector(state => state.productReducer.listProduct);
   const {cari} = route.params;
   const sort = [];
+  const dispatch = useDispatch();
+  const nav = useNavigation();
+  const [userx, setUserx] = useState({
+    id: 0,
+    name: '',
+    phone: '',
+    email: '',
+    role: '',
+    status: '',
+    token: '',
+  });
   allProduct.map(val => {
     if (val.product_name.toLowerCase().indexOf(cari.toLowerCase()) === -1) {
       return;
@@ -25,7 +39,34 @@ const HasilPencarian = ({route}) => {
       sort.push(val);
     }
   });
-  console.log(sort);
+
+  const getAll = async () => {
+    await AsyncStorage.getItem('dataLogin', (error, result) => {
+      if (result) {
+        let data = JSON.parse(result);
+        setUserx({
+          id: data.id,
+          name: data.name,
+          phone: data.phone,
+          email: data.email,
+          role: data.role,
+          status: data.status,
+          token: data.token,
+        });
+      }
+    });
+  };
+
+  const navToDetailStore = async (idProduct, idStore) => {
+    await dispatch(getProductById(idProduct, userx.token));
+    await dispatch(getStoreById(idStore, userx.token));
+    nav.navigate('DetailProduk');
+  };
+
+  useEffect(() => {
+    getAll();
+  }, []);
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="light-content" backgroundColor="#33907C" />
@@ -71,7 +112,7 @@ const HasilPencarian = ({route}) => {
                   produkNama={val.product_name}
                   produkHarga={'Rp ' + val.price}
                   img={val.picture}
-                  idP={val.id}
+                  onPress={() => navToDetailStore(val.id, val.store_id)}
                 />
               );
             })

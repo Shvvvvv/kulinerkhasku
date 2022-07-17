@@ -5,6 +5,7 @@ import axios from 'axios';
 
 import {API_KULINER} from '../../config';
 
+//USER
 export const signUpUser = param => dispatch => {
   axios
     .post(API_KULINER + 'api/register_user', {
@@ -42,21 +43,10 @@ export const loginUser = param => dispatch => {
             alertType: 'success',
           },
         });
-        dispatch({type: 'SUCCES_LOGIN', payload: result.data});
-        await AsyncStorage.mergeItem(
-          'dataLogin',
-          JSON.stringify(result.data.data),
-        );
-        // await AsyncStorage.mergeItem(
-        //   'idUser',
-        //   JSON.stringify(result.data.data.id),
-        // );
-        // await AsyncStorage.mergeItem('name', result.data.data.name);
-        // await AsyncStorage.mergeItem('phone', result.data.data.phone);
-        // await AsyncStorage.mergeItem('role', result.data.data.role);
-        // await AsyncStorage.mergeItem('email', result.data.data.email);
-        // await AsyncStorage.mergeItem('status', result.data.data.status);
-        // await AsyncStorage.mergeItem('token', result.data.data.token);
+        dispatch({type: 'SUCCES_LOGIN', payload: result.data.data});
+        const jsonValue = JSON.stringify(result.data.data);
+        console.log(jsonValue);
+        await AsyncStorage.setItem('dataLogin', jsonValue);
       } else {
         Notifier.showNotification({
           title: 'Login gagal',
@@ -73,24 +63,22 @@ export const loginUser = param => dispatch => {
           },
         });
       }
-
-      // dispatch({type: 'SUCCES_LOGIN', payload: result.data});
     })
     .catch(error => {
       console.log(error);
     });
 };
 
-export const reloginUser = param => dispatch => {
-  axios
-    .post(API_KULINER + 'api/user/login', param)
-    .then(async result => {
-      dispatch({type: 'SUCCES_LOGIN', payload: result.data});
-    })
-    .catch(error => {
-      console.log(error);
-    });
-};
+// export const reloginUser = param => dispatch => {
+//   axios
+//     .post(API_KULINER + 'api/user/login', param)
+//     .then(async result => {
+//       dispatch({type: 'SUCCES_LOGIN', payload: result.data});
+//     })
+//     .catch(error => {
+//       console.log(error);
+//     });
+// };
 
 export const doLogoutUser = (token, nav) => {
   axios
@@ -108,11 +96,27 @@ export const doLogoutUser = (token, nav) => {
     });
 };
 
-export const getAllProducts = () => dispatch => {
+export const getAllUser = token => dispatch => {
+  axios
+    .get(API_KULINER + 'api/user', {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    })
+    .then(result => {
+      dispatch({type: 'GET_ALL_USER', payload: result.data.data});
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
+//PRODUCT
+export const getAllProducts = setLoad => dispatch => {
   axios
     .get(API_KULINER + 'api/product')
     .then(result => {
-      console.log(result.data.data);
+      setLoad(false);
       dispatch({type: 'GET_ALL_PRODUCTS', payload: result.data.data});
     })
     .catch(error => {
@@ -127,14 +131,16 @@ export const getProductById = (id, token) => dispatch => {
         Authorization: 'Bearer ' + token,
       },
     })
-    .then(result => {
+    .then(async result => {
       dispatch({type: 'GET_PRODUCT_BY_ID', payload: result.data.data});
+      await AsyncStorage.mergeItem('product', JSON.stringify(result.data.data));
     })
     .catch(error => {
       console.log(error);
     });
 };
 
+//STORE
 export const getStoreById = (id, token) => dispatch => {
   axios
     .get(API_KULINER + 'api/store/' + id, {
@@ -142,8 +148,67 @@ export const getStoreById = (id, token) => dispatch => {
         Authorization: 'Bearer ' + token,
       },
     })
+    .then(async result => {
+      dispatch({type: 'GET_STORE_BY_ID', payload: result.data.data});
+      await AsyncStorage.mergeItem('store', JSON.stringify(result.data.data));
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
+export const getAllRating = token => dispatch => {
+  axios
+    .get(API_KULINER + 'api/rating/rating_store', {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    })
     .then(result => {
-      dispatch({type: 'GET_PRODUCT_BY_ID', payload: result.data.data});
+      dispatch({type: 'GET_RATING_STORE', payload: result.data.data});
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
+export const getTopRating = token => dispatch => {
+  axios
+    .get(API_KULINER + 'api/rating/top_rating_store', {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    })
+    .then(result => {
+      dispatch({type: 'GET_TOP_RATING', payload: result.data.data});
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
+export const createReview = (param, token) => dispatch => {
+  axios
+    .post(API_KULINER + 'api/rating/create_rating_store', param, {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    })
+    .then(result => {
+      Notifier.showNotification({
+        title: 'Review',
+        description: result.data.message,
+        duration: 3000,
+        showAnimationDuration: 800,
+        hideAnimationDuration: 800,
+        animationDuration: 800,
+        showEasing: Easing.in,
+        // hideOnPress: false,
+        Component: NotifierComponents.Alert,
+        componentProps: {
+          alertType: 'success',
+        },
+      });
     })
     .catch(error => {
       console.log(error);

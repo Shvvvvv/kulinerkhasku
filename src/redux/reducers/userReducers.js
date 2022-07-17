@@ -8,6 +8,7 @@ const initialState = {
   dataToko: {status: false, message: '', data: []},
   tampToko: {},
   dataUser: {},
+  allUser: [],
 };
 const userReducer = (state = initialState, actions) => {
   switch (actions.type) {
@@ -30,6 +31,11 @@ const userReducer = (state = initialState, actions) => {
       return {
         ...state,
         tampToko: actions.payload,
+      };
+    case 'GET_ALL_USER':
+      return {
+        ...state,
+        allUser: actions.payload,
       };
     default:
       return {

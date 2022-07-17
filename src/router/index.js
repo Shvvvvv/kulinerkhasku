@@ -33,6 +33,7 @@ import OrderHistory from '../pages/OrderHistory';
 import Profile from '../pages/Profile';
 import LanjutDaftarToko from '../pages/SignupToko/lanjut';
 import InfoToko from '../pages/InfoToko';
+import ForgotPassword from '../pages/ForgotPassword';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -98,7 +99,7 @@ const HomeTab = () => {
   const history = userx?.role === 'Pengunjung' && (
     <Tab.Screen
       name="History"
-      component={HasilPencarian}
+      component={OrderHistory}
       options={{
         tabBarIcon: ({color, size}) => (
           <Fontawe5 name="clipboard-list" color={color} size={size} />
@@ -292,6 +293,13 @@ const Router = () => {
       <Stack.Screen
         name="InfoToko"
         component={InfoToko}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ForgotPassword"
+        component={ForgotPassword}
         options={{
           headerShown: false,
         }}

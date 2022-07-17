@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from 'react';
 
 import {
+  ActivityIndicator,
   Image,
+  Modal,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -18,7 +20,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import map from '../../assets/Icon/Maps.png';
 import notif from '../../assets/Icon/Notification.png';
 import cilok from '../../assets/image/cilok.jpg';
-import {lebar} from '../../assets/style/Style';
+import {lebar, tinggi} from '../../assets/style/Style';
 import ButtonGreen from '../../components/button-green';
 import ButtonWhite from '../../components/button-white';
 import ArtikelList from '../../components/card-list-artikel';
@@ -29,6 +31,7 @@ import {getAllProducts} from '../../redux/actions';
 import {getProductById, getStoreById} from '../../redux/actions/authAction';
 
 const HomeDashboard = ({navigation}) => {
+  const [load, setLoad] = useState(true);
   const [userx, setUserx] = useState({
     id: 0,
     name: '',
@@ -41,13 +44,12 @@ const HomeDashboard = ({navigation}) => {
   const [alamat, setAlamat] = useState('');
   const allProduct = useSelector(state => state.productReducer.listProduct);
   const nav = useNavigation();
-  const user = useSelector(state => state.userReducer.dataUser.data);
   const dispatch = useDispatch();
 
   const navToDetailStore = async (idProduct, idStore) => {
     await dispatch(getProductById(idProduct, userx.token));
     await dispatch(getStoreById(idStore, userx.token));
-    nav.navigate('DetailProduk', {idProduct: idProduct});
+    nav.navigate('DetailProduk');
   };
 
   const getAll = async () => {
@@ -78,12 +80,29 @@ const HomeDashboard = ({navigation}) => {
 
   useEffect(() => {
     getAll();
-    dispatch(getAllProducts());
+    dispatch(getAllProducts(setLoad));
   }, []);
+
+  const Loading = () => {
+    return (
+      <Modal transparent={true} visible={load}>
+        <View
+          style={{
+            width: lebar,
+            height: tinggi,
+            justifyContent: 'center',
+            backgroundColor: '#000000DD',
+          }}>
+          <ActivityIndicator size="large" />
+        </View>
+      </Modal>
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#33907C" />
+      <Loading />
       <View style={styles.header}>
         <View style={styles.subHeader}>
           <Text style={styles.judul}>#KulinerKhasKu</Text>
@@ -132,7 +151,13 @@ const HomeDashboard = ({navigation}) => {
               padding: 15,
             }}>
             <Text style={{fontSize: 18, color: '#4F4F4F'}}>Produk Baru</Text>
-            <ButtonGreen l={120} p={30} judul="Lihat Semua" />
+            <ButtonGreen
+              l={120}
+              p={30}
+              judul="Lihat Semua"
+              submitting={false}
+              link={() => nav.navigate('ListProduct')}
+            />
           </View>
           <View style={{paddingHorizontal: 10}}>
             <ScrollView
@@ -166,7 +191,13 @@ const HomeDashboard = ({navigation}) => {
           <Text style={{fontSize: 18, color: '#4F4F4F'}}>
             Rekomendasi Produk
           </Text>
-          <ButtonGreen l={120} p={30} judul="Lihat Semua" />
+          <ButtonGreen
+            l={120}
+            p={30}
+            judul="Lihat Semua"
+            submitting={false}
+            link={() => nav.navigate('ListProduct')}
+          />
         </View>
         <View style={{paddingHorizontal: 10}}>
           <ScrollView

@@ -1,4 +1,7 @@
-import React from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
+import {set} from 'immer/dist/internal';
+import React, {useEffect, useState} from 'react';
 
 import {
   Image,
@@ -12,20 +15,102 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Rating} from 'react-native-ratings';
+import {Rating, AirbnbRating} from 'react-native-ratings';
 
 import FontAwe5 from 'react-native-vector-icons/Ionicons';
+import {useDispatch, useSelector} from 'react-redux';
 
 // import {} from 'react-native-gesture-handler';
 import kembali from '../../assets/Icon/Back.png';
 import cilok from '../../assets/image/cilok.jpg';
 import ButtonGreen from '../../components/button-green';
 import CardProduct from '../../components/card-product';
+import {
+  createReview,
+  getAllProducts,
+  getAllRating,
+  getAllUser,
+  getProductById,
+  getStoreById,
+  getTopRating,
+} from '../../redux/actions';
 
 const ListProductByToko = () => {
+  const [load, setLoad] = useState(true);
+  const [comment, setComment] = useState('');
+  const [rate, setRate] = useState(0);
+  const store = useSelector(state => state.storeReducers.store);
+  const allProduct = useSelector(state => state.productReducer.listProduct);
+  const allRating = useSelector(state => state.storeReducers.rating);
+  const topRating = useSelector(state => state.storeReducers.topRating);
+  const allUser = useSelector(state => state.userReducer.allUser);
+  const nav = useNavigation();
+  const dispatch = useDispatch();
+  const [userx, setUserx] = useState({
+    id: 0,
+    name: '',
+    phone: '',
+    email: '',
+    role: '',
+    status: '',
+    token: '',
+  });
+
+  const getAll = async () => {
+    await AsyncStorage.getItem('dataLogin', (error, result) => {
+      if (result) {
+        let data = JSON.parse(result);
+        setUserx({
+          id: data.id,
+          name: data.name,
+          phone: data.phone,
+          email: data.email,
+          role: data.role,
+          status: data.status,
+          token: data.token,
+        });
+        dispatch(getAllRating(data.token));
+        dispatch(getAllUser(data.token));
+        dispatch(getTopRating(data.token));
+      }
+    });
+  };
+
+  const navToDetailStore = async (idProduct, idStore) => {
+    await dispatch(getProductById(idProduct, userx.token));
+    await dispatch(getStoreById(idStore, userx.token));
+    nav.navigate('DetailProduk');
+  };
+
   function ratingCompleted(rating) {
-    console.log('Rating is: ' + rating);
+    setRate(rating);
   }
+
+  const handleKlik = async () => {
+    await dispatch(
+      createReview(
+        {
+          rating: rate,
+          store_id: store.id,
+          user_id: userx.id,
+          reviews: comment,
+        },
+        userx.token,
+      ),
+    );
+    setComment('');
+    await dispatch(getAllRating(userx.token));
+  };
+
+  useEffect(() => {
+    async function get() {
+      await getAll();
+      await dispatch(getAllProducts(setLoad));
+    }
+    get();
+  }, []);
+
+  useEffect(() => {}, [comment]);
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -36,7 +121,9 @@ const ListProductByToko = () => {
       />
       <ScrollView>
         <View style={styles.mainContainer}>
-          <ImageBackground source={cilok} style={styles.imageCover}>
+          <ImageBackground
+            source={{uri: store.picture1}}
+            style={styles.imageCover}>
             <TouchableOpacity style={styles.buttonKembali}>
               <View>
                 <Image source={kembali} style={{height: 30, width: 30}} />
@@ -92,7 +179,13 @@ const ListProductByToko = () => {
               width: '40%',
             }}>
             <Text style={{fontSize: 16, color: 'white'}}>Rating Toko</Text>
-            <Text style={{fontSize: 16, color: 'gold'}}>4.8</Text>
+            <Text style={{fontSize: 16, color: 'gold'}}>
+              {topRating.map(val => {
+                if (val.store_id === store.id) {
+                  return val.rating;
+                }
+              })}
+            </Text>
           </View>
           <View
             style={{
@@ -110,13 +203,19 @@ const ListProductByToko = () => {
         </View>
         <ScrollView style={{height: 450}} nestedScrollEnabled>
           <View style={styles.containerProduk}>
-            <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" />
-            <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" />
-            <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" />
-            <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" />
-            <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" />
-            <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" />
-            <CardProduct produkNama="Cilok" produkHarga="Rp 12.000" />
+            {allProduct.map(val => {
+              return (
+                val.store_id === store.id && (
+                  <CardProduct
+                    key={val.id}
+                    produkNama={val.product_name}
+                    produkHarga={'Rp ' + val.price}
+                    img={val.picture}
+                    onPress={() => navToDetailStore(val.id, val.store_id)}
+                  />
+                )
+              );
+            })}
           </View>
         </ScrollView>
         <View
@@ -145,7 +244,8 @@ const ListProductByToko = () => {
               Berikan penilaianmu setelah mengunjungi toko
             </Text>
             <Rating
-              imageSize={20}
+              defaultRating={1}
+              imageSize={25}
               showRating={false}
               onFinishRating={ratingCompleted}
             />
@@ -164,16 +264,66 @@ const ListProductByToko = () => {
               multiline
               placeholder="Tulis penilaianmu disini..."
               placeholderTextColor={'#33907C'}
+              value={comment}
+              onChangeText={value => setComment(value)}
             />
             <ButtonGreen
               l={150}
               p={30}
               judul="Berikan Komentar"
               marginTop={10}
+              submitting={false}
+              link={handleKlik}
             />
           </View>
         </View>
-        <ScrollView></ScrollView>
+        <ScrollView nestedScrollEnabled>
+          <View
+            style={{
+              paddingHorizontal: 20,
+              paddingVertical: 10,
+            }}>
+            {allRating.map(val => {
+              return (
+                val.store_id === store.id && (
+                  <View
+                    key={val.id}
+                    style={{
+                      padding: 10,
+                      backgroundColor: 'white',
+                      borderRadius: 10,
+                      marginBottom: 7,
+                    }}>
+                    <Text
+                      style={{
+                        fontWeight: 'bold',
+                        fontSize: 18,
+                        marginBottom: 3,
+                      }}>
+                      {allUser.map(valUser => {
+                        if (valUser.id === val.user_id) {
+                          return valUser.name;
+                        }
+                      })}
+                    </Text>
+                    <AirbnbRating
+                      defaultRating={val.rating}
+                      size={17}
+                      showRating={false}
+                      isDisabled
+                      starContainerStyle={{
+                        width: '100%',
+                        justifyContent: 'flex-start',
+                        marginBottom: 3,
+                      }}
+                    />
+                    <Text>{val.reviews}</Text>
+                  </View>
+                )
+              );
+            })}
+          </View>
+        </ScrollView>
       </ScrollView>
     </SafeAreaView>
   );
