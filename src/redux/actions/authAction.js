@@ -20,7 +20,7 @@ export const signUpUser = param => dispatch => {
     })
     .catch(error => {
       console.log('Error');
-      console.log(error);
+      console.log(error.response.data);
     });
 };
 
@@ -141,6 +141,19 @@ export const getProductById = (id, token) => dispatch => {
 };
 
 //STORE
+export const signUpStore = param => dispatch => {
+  console.log(param);
+  axios
+    .post(API_KULINER + 'api/register_store_owner', param)
+    .then(result => {
+      console.log(result.data);
+      dispatch({type: 'SUCCESS_REGISTER_TOKO', payload: result.data});
+    })
+    .catch(error => {
+      console.log('Error');
+      console.log(error);
+    });
+};
 export const getStoreById = (id, token) => dispatch => {
   axios
     .get(API_KULINER + 'api/store/' + id, {

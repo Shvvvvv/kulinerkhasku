@@ -6333,6 +6333,11 @@
   "resolved" "https://registry.npmjs.org/react-native-image-crop-picker/-/react-native-image-crop-picker-0.37.3.tgz"
   "version" "0.37.3"
 
+"react-native-image-picker@^4.8.4":
+  "integrity" "sha512-Mjh2j/sddyolb16EpmprWzbtyeFvW8Xgzr/8WNi9d6bR2FC/kL78cY/a+7Yzujg5ZDtT1MWys+eWw/qtfwgGiw=="
+  "resolved" "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-4.8.4.tgz"
+  "version" "4.8.4"
+
 "react-native-maps@^0.31.1":
   "integrity" "sha512-vipeOPykqLRMCLcLUCZEB+cTdNSlq88NLb0jChY4UGTY5fgOS7GYWkfswy6bW1ayTRLxJS3zpMGFDUY59/ZrXA=="
   "resolved" "https://registry.npmjs.org/react-native-maps/-/react-native-maps-0.31.1.tgz"
