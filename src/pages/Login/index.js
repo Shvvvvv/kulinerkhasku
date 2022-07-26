@@ -172,7 +172,8 @@ const Login = ({navigation}) => {
               <Button
                 teks="Toko"
                 link={() => {
-                  navigation.navigate('LanjutDaftarToko');
+                  navigation.navigate('SignupToko');
+                  // navigation.navigate('LanjutDaftarToko');
                   setShow(false);
                 }}
               />

@@ -17,6 +17,7 @@ import * as Yup from 'yup';
 import {Formik} from 'formik';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch} from 'react-redux';
+import {getStoreById} from '../../redux/actions';
 
 const validationSchema = Yup.object({
   store_name: Yup.string()
@@ -55,9 +56,9 @@ const EditStore = ({navigation}) => {
       picture1: userx.picture1,
       picture2: userx.picture2,
       picture3: userx.picture3,
-      description: userx.description,
+      description: val.description,
     };
-    // await dispatch();
+    await dispatch(param, userx.token, navigation);
   };
 
   const getAll = async () => {
@@ -75,7 +76,6 @@ const EditStore = ({navigation}) => {
           picture2: data.store.stores.picture2,
           picture3: data.store.stores.picture3,
         });
-        // dispatch(getStoreById(data.store.stores.id, data.token));
       }
     });
   };
@@ -137,7 +137,7 @@ const EditStore = ({navigation}) => {
                     flex: 1,
                     paddingHorizontal: 20,
                   }}>
-                  <Text style={styles.teks}>Nama Toko</Text>
+                  <Text style={styles().teks}>Nama Toko</Text>
                   <TextInput
                     style={
                       styles(errors.store_name && touched.store_name).inputan
@@ -146,7 +146,7 @@ const EditStore = ({navigation}) => {
                     value={store_name}
                     onChangeText={handleChange('store_name')}
                   />
-                  <Text style={styles.teks}>Deskripsi Toko</Text>
+                  <Text style={styles().teks}>Deskripsi Toko</Text>
                   <TextInput
                     style={
                       styles(errors.description && touched.description).inputan
@@ -155,14 +155,14 @@ const EditStore = ({navigation}) => {
                     value={description}
                     onChangeText={handleChange('description')}
                   />
-                  <Text style={styles.teks}>Alamat</Text>
+                  <Text style={styles().teks}>Alamat</Text>
                   <TextInput
                     style={styles(errors.address && touched.address).inputan}
                     onBlur={handleBlur('address')}
                     value={address}
                     onChangeText={handleChange('address')}
                   />
-                  <Text style={styles.teks}>Phone</Text>
+                  <Text style={styles().teks}>Phone</Text>
                   <TextInput
                     style={styles(errors.phone && touched.phone).inputan}
                     onBlur={handleBlur('phone')}

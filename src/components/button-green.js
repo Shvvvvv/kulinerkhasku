@@ -10,11 +10,22 @@ import {
 
 import {lebar, tinggi} from '../assets/style/Style';
 
-const ButtonGreen = ({link, p, l, judul, submitting, ...rest}) => {
+const ButtonGreen = ({
+  link,
+  p,
+  l,
+  disable = false,
+  judul,
+  submitting,
+  ...rest
+}) => {
   const bgColor = submitting ? 'gray' : '#33907C';
   return (
     <SafeAreaView>
-      <TouchableOpacity onPress={submitting ? null : link} {...rest}>
+      <TouchableOpacity
+        onPress={submitting ? null : link}
+        {...rest}
+        disabled={disable}>
         <View
           style={[
             styles.button,

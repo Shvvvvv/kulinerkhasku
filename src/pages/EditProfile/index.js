@@ -61,6 +61,7 @@ const EditProfile = ({navigation}) => {
   useEffect(() => {
     getAll();
   }, []);
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="light-content" backgroundColor="#33907C" />

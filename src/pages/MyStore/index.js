@@ -8,57 +8,20 @@ import {
   ScrollView,
   ImageBackground,
 } from 'react-native';
-import React from 'react';
-import IconNav from '../../components/icon-navbar';
+import React, {useState, useEffect} from 'react';
 import ButtonGreen from '../../components/button-green';
 import toko from '../../assets/Icon/iconStore.png';
-import ButtonWhite from '../../components/button-white';
-import {lebar} from '../../assets/style/Style';
 import Searching from '../../components/machine-search';
-import cilok from '../../assets/image/cilok.jpg';
 import edit from '../../assets/Icon/Edit.png';
 import trash from '../../assets/Icon/trash.png';
 import close from '../../assets/Icon/Close.png';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useState} from 'react';
-import {dispatch} from 'rxjs/internal/observable/range';
-import {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {getAllProducts} from '../../redux/actions';
 
-const dataDummy = [
-  {
-    id: 1,
-    nama: 'Cilok',
-    harga: 10000,
-    picture:
-      'https://cdn0-production-images-kly.akamaized.net/j50PAqiQ_jbWKwDTqJWoJoZ0HeI=/0x284:903x793/1200x675/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3384331/original/092840500_1614053572-shutterstock_1791558536.jpg',
-  },
-  {
-    id: 2,
-    nama: 'Combro',
-    harga: 5000,
-    picture:
-      'https://cdn-cas.orami.co.id/parenting/images/Combro_pergikuliner.com.width-800.jpg',
-  },
-  {
-    id: 3,
-    nama: 'Cireng',
-    harga: 3000,
-    picture:
-      'https://cdn-cas.orami.co.id/parenting/images/Cireng_pikiran-rakyat.com.width-800.jpg',
-  },
-  {
-    id: 4,
-    nama: 'Cimol',
-    harga: 5000,
-    picture:
-      'https://cdn-cas.orami.co.id/parenting/images/Cimol_asianfoodnetwoek.com.width-800.jpg',
-  },
-];
-
 const Card = props => {
+  const nav = useNavigation();
   return (
     <View
       style={{
@@ -156,7 +119,6 @@ const MyStore = () => {
     await AsyncStorage.getItem('dataLogin', (error, result) => {
       if (result) {
         let data = JSON.parse(result);
-        console.log(data.store.stores.store_name);
         setUserx({
           id: data.id,
           token: data.token,

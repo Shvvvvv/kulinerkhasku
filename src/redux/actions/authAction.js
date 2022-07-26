@@ -21,7 +21,7 @@ export const signUpUser = param => dispatch => {
     })
     .catch(error => {
       console.log('Error');
-      console.log(error);
+      console.log(error.response.data);
     });
 };
 
@@ -197,7 +197,45 @@ export const getProductById = (id, token) => dispatch => {
     });
 };
 
+export const createProduct = (param, token, nav) => dispatch => {
+  const formData = new FormData();
+  formData.append('param', JSON.stringify(param));
+  formData.append()
+  axios
+    .post(API_KULINER + 'api/product', param, {
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then(result => {
+      console.log(result);
+      nav.navigate('MyStore');
+    })
+    .catch(err => {
+      console.log('createProduct');
+      console.log(err);
+    });
+};
+
 //STORE
+export const signUpStore = param => dispatch => {
+  console.log(param);
+  axios
+    .post(API_KULINER + 'api/register_store_owner', param, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then(result => {
+      console.log(result.data);
+      dispatch({type: 'SUCCESS_REGISTER_TOKO', payload: result.data});
+    })
+    .catch(error => {
+      console.log('Error');
+      console.log(error);
+    });
+};
 export const getStoreById = (id, token) => dispatch => {
   axios
     .get(API_KULINER + 'api/store/' + id, {
@@ -225,8 +263,10 @@ export const updateStore = (param, token, nav) => dispatch => {
       AsyncStorage.getItem('dataLogin', (error, result) => {
         if (result) {
           var data = JSON.parse(result);
-          data.name = param.name;
-          data.phone = param.phone;
+          data.store.stores.store_name = param.name;
+          data.store.stores.address = param.address;
+          data.store.stores.phone_store = param.phone;
+          data.store.stores.description = param.description;
         }
         AsyncStorage.mergeItem('dataLogin', JSON.stringify(data));
         dispatch({type: 'GET_DETAIL_USER', payload: data});
@@ -244,7 +284,7 @@ export const updateStore = (param, token, nav) => dispatch => {
           alertType: 'success',
         },
       });
-      nav.navigate('Profile');
+      nav.navigate('MyStore');
     })
     .catch(error => {
       console.log('getStoreByID');

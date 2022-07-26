@@ -17,12 +17,15 @@ import {
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
 import DatePicker from 'react-native-date-picker';
-import DocumentPicker from 'react-native-document-picker';
 import Geocoder from 'react-native-geocoder';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+// import ImagePicker from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
 import MapView, {AnimatedRegion, MarkerAnimated} from 'react-native-maps';
+
+import {useDispatch, useSelector} from 'react-redux';
 
 import {Formik} from 'formik';
 
@@ -35,15 +38,23 @@ import maps from '../../assets/image/bg-map.png';
 import {lebar, tinggi} from '../../assets/style/Style';
 import ButtonGreen from '../../components/button-green';
 import Button from '../../components/button-light-semibold';
+import {signUpStore} from '../../redux/actions';
+import {dateToTime} from '../../utils/convert';
 
 const LanjutDaftarToko = ({navigation}) => {
   const [isModalVisible, setModalVisible] = useState(false);
-  const [date, setDate] = useState(new Date());
+  const [dateOpen, setDateOpen] = useState(new Date());
+  const [dateClosed, setDateClosed] = useState(new Date());
   const [show, setShow] = useState(false);
-  const [singleFile, setSingleFile] = useState('');
-  //changed from useState to useRef
-  const mapRef = useRef(null);
+  const {dataToko} = useSelector(state => state.userReducer);
+  const [singleFile, setSingleFile] = useState(null);
+  const [singleFile1, setSingleFile1] = useState(null);
+  const [singleFile2, setSingleFile2] = useState(null);
+  const dispatch = useDispatch();
+  const nav = useNavigation();
+  const [area, setArea] = useState(null);
   const [myAddress, setMyAddress] = useState(null);
+  const {tampToko} = useSelector(state => state.userReducer);
   const [coordinate, setCoordinate] = useState(
     new AnimatedRegion({
       latitude: 107.57147742604502,
@@ -66,18 +77,64 @@ const LanjutDaftarToko = ({navigation}) => {
       latitude: latitude || region.latitude,
       longitude: longitude || region.longitude,
     });
+
+    Geocoder.geocodePosition({
+      lat: region.latitude,
+      lng: region.longitude,
+    }).then(results => {
+      let result = results[0];
+      setArea(result.adminArea);
+      console.log(result);
+    });
   };
 
-  const uploadImage = async () => {
-    if (singleFile != null) {
+  const uploadData = async () => {
+    if (singleFile != null && singleFile1 != null && singleFile2 != null) {
       const fileToUpload = singleFile;
       const data = new FormData();
-      data.append('name', 'Image Upload');
-      data.append('file_attachment', fileToUpload);
+      // data.append('name', 'Image Upload');
+      data.append('name', tampToko.nama);
+      data.append('email', tampToko.email);
+      data.append('phone', tampToko.noHp);
+      data.append('password', tampToko.password);
+      data.append('store_name', tampToko.namaToko);
+      data.append('address', myAddress);
+      data.append('latitude', region.latitude);
+      data.append('longitude', region.longitude);
+      data.append('description', '-');
+      data.append('picture1', {
+        name: singleFile.path.replace(
+          'file:///storage/emulated/0/Android/data/com.tokomakanankhas/files/Pictures/',
+          '',
+        ),
+        type: singleFile.mime,
+        uri: singleFile.path,
+      });
+      data.append('picture2', {
+        name: singleFile1.path.replace(
+          'file:///storage/emulated/0/Android/data/com.tokomakanankhas/files/Pictures/',
+          '',
+        ),
+        type: singleFile1.mime,
+        uri: singleFile1.path,
+      });
+      data.append('picture3', {
+        name: singleFile2.path.replace(
+          'file:///storage/emulated/0/Android/data/com.tokomakanankhas/files/Pictures/',
+          '',
+        ),
+        type: singleFile2.mime,
+        uri: singleFile2.path,
+      });
+      data.append('phone_store', tampToko.noHp);
+      data.append('open_time', dateToTime(dateOpen));
+      data.append('close_time', dateToTime(dateClosed));
+      dispatch(signUpStore(data));
     }
   };
 
   const cropImage = () => {
+    // setShow(!show);
     ImagePicker.openPicker({
       width: 300,
       height: 400,
@@ -88,32 +145,31 @@ const LanjutDaftarToko = ({navigation}) => {
     });
   };
 
+  const cropImage1 = () => {
+    // setShow(!show);
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+    }).then(image => {
+      setSingleFile1(image);
+      console.log(image.path);
+    });
+  };
+
+  const cropImage2 = () => {
+    // setShow(!show);
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+    }).then(image => {
+      setSingleFile2(image);
+      console.log(image.path);
+    });
+  };
+
   const setCurrentCoordinate = async () => {
-    // const coordLat = await AsyncStorage.getItem('latitude');
-    // const coordLong = await AsyncStorage.getItem('longitude');
-    // const num1 = Number(coordLat);
-    // const num2 = Number(coordLong);
-    // let newCoordinate = {
-    //   latitude: region.latitude,
-    //   longitude: region.longitude,
-    //   latitudeDelta: 0.012,
-    //   longitudeDelta: 0.012,
-    // };
-    // //camera will position itself to these coordinates.
-    // const newCamera = {
-    //   center: {
-    //     latitude: region.latitude,
-    //     longitude: region.longitude,
-    //   },
-    //   pitch: 0,
-    //   heading: 0,
-    //   //zoom: 17  --Use it when required
-    // };
-    // if (myMarker) {
-    //   myMarker.animateMarkerToCoordinate(newCoordinate, 2000);
-    //   //camera type, `newCamera`, used inside animateCamera
-    //   mapRef.current.animateCamera(newCamera, {duration: 2000});
-    // }
     Geocoder.geocodePosition({
       lat: region.latitude,
       lng: region.longitude,
@@ -125,24 +181,20 @@ const LanjutDaftarToko = ({navigation}) => {
     });
   };
 
-  const selectFile = async () => {
-    try {
-      const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.images],
+  useEffect(() => {
+    console.log('ini ya ?', dataToko);
+    if (dataToko.status) {
+      dispatch({
+        type: 'SUCCESS_REGISTER_USER',
+        payload: {status: false, message: '', data: []},
       });
-      console.log('res :' + JSON.stringify(res));
-      setSingleFile(res);
-      console.log(singleFile);
-    } catch (err) {
-      setSingleFile(null);
-      if (DocumentPicker.isCancel(err)) {
-        alert('Canceled');
-      } else {
-        alert('Unknown Error: ' + JSON.stringify(err));
-        throw err;
-      }
+      nav.navigate('Verify');
     }
-  };
+  }, [dataToko, dispatch, nav]);
+
+  // useEffect(() => {
+  //   console.log(singleFile);
+  // }, [singleFile]);
 
   const Popup = () => {
     return (
@@ -220,134 +272,95 @@ const LanjutDaftarToko = ({navigation}) => {
             {!!singleFile ? (
               <View style={styles.imageInput}>
                 {console.log('Masuk 2')}
-                <TouchableOpacity
-                  onPress={() => {
-                    setShow(!show);
-                  }}>
-                  <Image source={singleFile} style={styles.camera} />
-                  <Text style={{color: '#ACADAE'}}>Max file 2mb</Text>
+                <TouchableOpacity onPress={cropImage}>
+                  {/* {console.log(singleFile)} */}
+                  <Image
+                    source={{uri: `${singleFile.path}`}}
+                    style={styles.images}
+                  />
+                  {/* <Text style={{color: '#ACADAE'}}>Max file 2mb</Text> */}
                 </TouchableOpacity>
               </View>
             ) : (
               <View style={styles.imageInput}>
-                {console.log('Masuk 1')}
-                <TouchableOpacity
-                  onPress={() => {
-                    setShow(!show);
-                  }}>
+                {/* {console.log('Masuk 1')} */}
+                <TouchableOpacity onPress={cropImage}>
                   <Image source={camera} style={styles.camera} />
                   <Text style={{color: '#ACADAE'}}>Max file 2mb</Text>
                 </TouchableOpacity>
               </View>
             )}
-            <View style={styles.imageInput}>
-              <TouchableOpacity
-                onPress={() => {
-                  setShow(!show);
-                }}>
-                <Image source={camera} style={styles.camera} />
-                <Text style={{color: '#ACADAE'}}>Max file 2mb</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.imageInput}>
-              <TouchableOpacity
-                onPress={() => {
-                  setShow(!show);
-                }}>
-                <Image source={camera} style={styles.camera} />
-                <Text style={{color: '#ACADAE'}}>Max file 2mb</Text>
-              </TouchableOpacity>
-            </View>
+
+            {!!singleFile1 ? (
+              <View style={styles.imageInput}>
+                {/* {console.log('Masuk 2')} */}
+                <TouchableOpacity onPress={cropImage1}>
+                  {/* {console.log(singleFile1)} */}
+                  <Image
+                    source={{uri: `${singleFile1.path}`}}
+                    style={styles.images}
+                  />
+                  {/* <Text style={{color: '#ACADAE'}}>Max file 2mb</Text> */}
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View style={styles.imageInput}>
+                {/* {console.log('Masuk 1')} */}
+                <TouchableOpacity onPress={cropImage1}>
+                  <Image source={camera} style={styles.camera} />
+                  <Text style={{color: '#ACADAE'}}>Max file 2mb</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            {!!singleFile2 ? (
+              <View style={styles.imageInput}>
+                {/* {console.log('Masuk 2')} */}
+                <TouchableOpacity onPress={cropImage2}>
+                  {/* {console.log(singleFile1)} */}
+                  <Image
+                    source={{uri: `${singleFile1.path}`}}
+                    style={styles.images}
+                  />
+                  {/* <Text style={{color: '#ACADAE'}}>Max file 2mb</Text> */}
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View style={styles.imageInput}>
+                {/* {console.log('Masuk 1')} */}
+                <TouchableOpacity onPress={cropImage2}>
+                  <Image source={camera} style={styles.camera} />
+                  <Text style={{color: '#ACADAE'}}>Max file 2mb</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
           <Text style={{color: '#33907C'}}>
             Pastikan kamu mengambil foto dari berbagai sudut pandang
           </Text>
-          {/* {singleFile != null ? (
-            <Text style={{color: 'red'}}>
-              File Name: {singleFile[0].name ? singleFile[0].name : ''}
-              {'\n'}
-              Type: {singleFile[0].type ? singleFile[0].type : ''}
-              {'\n'}
-              File Size: {singleFile[0].size ? singleFile[0].size : ''}
-              {'\n'}
-              URI: {singleFile[0].uri ? singleFile[0].uri : ''}
-              {'\n'}
-            </Text>
-          ) : null} */}
-          {/* <Formik
-            initialValues={inputan}
-            validationSchema={validationSchema}
-            onSubmit={(values, formikAction) => {
-              setTimeout(() => {
-                formikAction.resetForm();
-                formikAction.setSubmitting(false);
-                onSubmit(values.alamat, values.deskripsi);
-              }, 2000);
-            }}>
-            {({
-              values,
-              errors,
-              touched,
-              isSubmitting,
-              handleChange,
-              handleBlur,
-              handleSubmit,
-            }) => {
-              const {alamat, deskripsi} = values;
-            }}
-            <TextInput
-              multiline={true}
-              placeholder="Alamat lengkap"
-              placeholderTextColor="#33907C"
-              style={{
-                borderWidth: 1,
-                borderRadius: 16,
-                borderColor: '#33907C',
-                marginTop: 40,
-                height: tinggi / 5,
-                color: '#33907C',
-                padding: 20,
-                textAlignVertical: 'top',
-              }}
-            />
-            <TextInput
-              multiline={true}
-              placeholder="Deskripsi Toko"
-              placeholderTextColor="#33907C"
-              style={{
-                borderWidth: 1,
-                borderRadius: 16,
-                borderColor: '#33907C',
-                marginTop: 40,
-                height: tinggi / 5,
-                color: '#33907C',
-                padding: 20,
-                textAlignVertical: 'top',
-              }}
-            />
-          </Formik> */}
 
           <Text style={{color: '#33907C', marginTop: 35, marginBottom: 15}}>
             Jam Buka
           </Text>
           <DatePicker
-            date={date}
-            onDateChange={setDate}
+            date={dateOpen}
+            onDateChange={setDateOpen}
             mode="time"
             androidVariant="nativeAndroid"
             textColor="#33907C"
             locale="id"
+            is24hourSource="locale"
           />
           <Text style={{color: '#33907C', marginTop: 35, marginBottom: 15}}>
             Jam Tutup
           </Text>
           <DatePicker
-            date={date}
-            onDateChange={setDate}
+            date={dateClosed}
+            onDateChange={setDateClosed}
             mode="time"
             androidVariant="nativeAndroid"
             textColor="#33907C"
             locale="id"
+            is24hourSource="locale"
           />
 
           <Text style={{color: '#33907C', marginTop: 35, marginBottom: 15}}>
@@ -386,8 +399,26 @@ const LanjutDaftarToko = ({navigation}) => {
               </View>
             </TouchableOpacity>
           </ImageBackground>
+          {area === 'Jawa Barat' ||
+          area === 'West Java' ||
+          area === null ? null : (
+            <View style={{marginBottom: 14}}>
+              <Text style={{color: 'red'}}>
+                Maaf Area yang anda pilih diluar jangkauan. Aplikasi hanya
+                mendukung area Jawa Barat saja
+              </Text>
+            </View>
+          )}
           <View style={{alignSelf: 'center'}}>
-            <ButtonGreen judul="Daftar" p={40} l={lebar / 1.3} />
+            <ButtonGreen
+              judul="Daftar"
+              p={40}
+              l={lebar / 1.3}
+              disable={
+                area === 'Jawa Barat' || area === 'West Java' ? false : true
+              }
+              onPress={uploadData}
+            />
           </View>
         </View>
         <Modal
@@ -437,7 +468,7 @@ const LanjutDaftarToko = ({navigation}) => {
                   paddingHorizontal: 10,
                   height: 50,
                 }}>
-                <GooglePlacesAutocomplete
+                {/* <GooglePlacesAutocomplete
                   predefinedPlacesAlwaysVisible={true}
                   placeholder="Enter Location"
                   minLength={2}
@@ -459,7 +490,7 @@ const LanjutDaftarToko = ({navigation}) => {
                     };
                     onRegionChange(region, region.latitude, region.longitude);
                   }}
-                />
+                /> */}
               </View>
               <View
                 style={{
@@ -567,6 +598,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   camera: {width: 50, height: 50, marginBottom: 15, alignSelf: 'center'},
+  images: {width: 150, height: 135, alignSelf: 'center', borderRadius: 10},
   map: {
     width: lebar / 1.1,
     height: tinggi / 1.8,
