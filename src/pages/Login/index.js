@@ -47,7 +47,7 @@ const Form = () => {
     if (infoDataUser.dataUser.status) {
       nav.navigate('HomeTab');
     }
-  }, []);
+  }, [infoDataUser, nav]);
 
   const onSubmit = (email, password) => {
     // setAct(!act);
