@@ -110,6 +110,13 @@ function HomeStackScreen() {
           headerShown: false,
         }}
       />
+      <HomeStack.Screen
+        name="ListProduct"
+        component={ListProduct}
+        options={{
+          headerShown: false,
+        }}
+      />
     </HomeStack.Navigator>
   );
 }
