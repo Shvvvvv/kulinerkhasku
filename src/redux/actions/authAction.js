@@ -144,7 +144,11 @@ export const getProductById = (id, token) => dispatch => {
 export const signUpStore = param => dispatch => {
   console.log(param);
   axios
-    .post(API_KULINER + 'api/register_store_owner', param)
+    .post(API_KULINER + 'api/register_store_owner', param, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
     .then(result => {
       console.log(result.data);
       dispatch({type: 'SUCCESS_REGISTER_TOKO', payload: result.data});
