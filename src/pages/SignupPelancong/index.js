@@ -57,6 +57,8 @@ const Form = () => {
   const statusRegister = useSelector(state => state.userReducer);
   const nav = useNavigation();
 
+  function cek() {}
+
   useEffect(() => {
     if (statusRegister.registerUserData.status) {
       dispatch({
@@ -65,7 +67,7 @@ const Form = () => {
       });
       nav.navigate('Verify');
     }
-  }, []);
+  }, [statusRegister]);
 
   const onSubmit = (name, email, phone, password) => {
     dispatch(

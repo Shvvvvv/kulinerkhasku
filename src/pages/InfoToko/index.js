@@ -14,8 +14,37 @@ import {tinggi, lebar} from '../../assets/style/Style';
 import kembali from '../../assets/Icon/Back.png';
 import ButtonGreen from '../../components/button-green';
 import iconStore from '../../assets/Icon/iconStore.png';
+import {useDispatch, useSelector} from 'react-redux';
+import {useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getStoreById} from '../../redux/actions';
+import {useEffect} from 'react';
 
-const InfoToko = () => {
+const InfoToko = ({navigation}) => {
+  const dispatch = useDispatch();
+  const [userx, setUserx] = useState('');
+  const store = useSelector(state => state.storeReducers.store);
+
+  const getAll = async () => {
+    await AsyncStorage.getItem('dataLogin', (error, result) => {
+      if (result) {
+        let data = JSON.parse(result);
+        setUserx({
+          id: data.id,
+          token: data.token,
+          namaToko: data.store.stores.store_name,
+          idToko: data.store.stores.id,
+        });
+        dispatch(getStoreById(data.store.stores.id, data.token));
+      }
+    });
+  };
+
+  useEffect(() => {
+    getAll();
+  }, []);
+
+  useEffect(() => {}, [userx]);
   return (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="light-content" backgroundColor="#33907C" />
@@ -27,7 +56,7 @@ const InfoToko = () => {
             flexDirection: 'row',
             paddingTop: 13,
           }}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <View
               style={{
                 paddingLeft: 10,
@@ -73,24 +102,13 @@ const InfoToko = () => {
           </View>
           <ScrollView style={{paddingHorizontal: 20}}>
             <Text style={styles.teks}>Nama Toko</Text>
-            <Text style={styles.teks2}>Toko Khas Ku</Text>
-            <Text style={styles.teks}>Website Toko</Text>
-            <Text style={styles.teks2}>www.tokokhas.com</Text>
+            <Text style={styles.teks2}>{store?.store_name}</Text>
             <Text style={styles.teks}>Deskripsi Toko</Text>
-            <Text style={styles.teks2}>
-              Sebuah toko yang bergerak di makanan yang enak sekali seperti
-              terbang ke langit yang ke tujuh uhh mantapp
-            </Text>
-            <Text style={styles.teks}>Tipe Toko</Text>
-            <Text style={styles.teks2}>Kelontong</Text>
+            <Text style={styles.teks2}>{store?.description}</Text>
             <Text style={styles.teks}>Alamat</Text>
-            <Text style={styles.teks2}>Jl. Merdeka No.34</Text>
-            <Text style={styles.teks}>Kota</Text>
-            <Text style={styles.teks2}>Kota Bandung</Text>
-            <Text style={styles.teks}>Negara</Text>
-            <Text style={styles.teks2}> Indonesia</Text>
-            <Text style={styles.teks}>Kode Pos</Text>
-            <Text style={styles.teks2}>112233</Text>
+            <Text style={styles.teks2}>{store?.address}</Text>
+            <Text style={styles.teks}>No. Telpon Toko</Text>
+            <Text style={styles.teks2}>{store?.phone_store}</Text>
           </ScrollView>
         </View>
         <View
@@ -110,7 +128,12 @@ const InfoToko = () => {
 
             elevation: 9,
           }}>
-          <ButtonGreen judul="Edit" p={45} l={lebar / 1.2} />
+          <ButtonGreen
+            judul="Edit"
+            p={45}
+            l={lebar / 1.2}
+            link={() => navigation.navigate('EditStore')}
+          />
           <View
             style={{
               height: 3,

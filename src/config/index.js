@@ -1,8 +1,7 @@
 export const API_KEY =
   'https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyAimZEgYaeI0fRa0XZTHoP-IyhpQ5r7CU8';
 
-export const API_KULINER =
-  'https://hashtagkulinerkhasku.000webhostapp.com/public/';
+export const API_KULINER = 'https://anonyproject.online/public/';
 // import React, {useEffect, useState} from 'react';
 
 // import {PermissionsAndroid, Platform} from 'react-native';

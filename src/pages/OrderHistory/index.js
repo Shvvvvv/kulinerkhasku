@@ -8,54 +8,93 @@ import {
   ScrollView,
 } from 'react-native';
 import React from 'react';
-import IconNav from '../../components/icon-navbar';
-import cilok from '../../assets/image/cilok.jpg';
+import logo from '../../assets/Icon/fast-food.png';
 import ButtonGreen from '../../components/button-green';
+import {useEffect} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {getHistoryByID} from '../../redux/actions';
+import {useNavigation} from '@react-navigation/native';
 
-const OrderHistory = () => {
-  const Card = () => {
-    return (
+const Card = props => {
+  const nav = useNavigation();
+  return (
+    <View
+      style={{
+        backgroundColor: '#FFF',
+        height: 70,
+        flexDirection: 'row',
+        borderRadius: 10,
+        padding: 10,
+        marginBottom: 5,
+      }}>
+      <Image
+        source={logo}
+        style={{
+          height: '100%',
+          width: '15%',
+          borderRadius: 10,
+          marginRight: 15,
+        }}
+      />
       <View
         style={{
-          backgroundColor: '#FFF',
-          height: 70,
-          flexDirection: 'row',
-          borderRadius: 10,
-          padding: 10,
-          marginBottom: 5,
+          flex: 1,
+          justifyContent: 'center',
+          marginRight: 15,
         }}>
-        <Image
-          source={cilok}
-          style={{
-            height: '100%',
-            width: '15%',
-            borderRadius: 10,
-            marginRight: 15,
+        <Text style={{color: '#000'}}>{props.toko}</Text>
+        <Text style={{color: '#33907C'}}>Rp 12.000,-</Text>
+      </View>
+      <View
+        style={{
+          justifyContent: 'center',
+        }}>
+        <ButtonGreen
+          judul="Kunjungi"
+          p={25}
+          l={100}
+          link={() => {
+            nav.navigate('ListProductByToko', {idToko: props.id});
           }}
         />
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            marginRight: 15,
-          }}>
-          <Text style={{color: '#000'}}>Cilok</Text>
-          <Text style={{color: '#33907C'}}>Rp 12.000,-</Text>
-        </View>
-        <View
-          style={{
-            justifyContent: 'center',
-          }}>
-          <ButtonGreen judul="Kunjungi" p={25} l={100} />
-        </View>
       </View>
-    );
+    </View>
+  );
+};
+
+const OrderHistory = ({navigation}) => {
+  const dispatch = useDispatch();
+  const [userx, setUserx] = useState({});
+  const history = useSelector(state => state.userReducer.historyUser);
+  const getAll = async () => {
+    await AsyncStorage.getItem('dataLogin', (error, result) => {
+      if (result) {
+        let data = JSON.parse(result);
+        setUserx({
+          id: data.id,
+          token: data.token,
+        });
+        dispatch(getHistoryByID(data.id, data.token));
+        // console.log('kesini');
+      }
+    });
   };
+  useEffect(() => {
+    const refresh = navigation.addListener('focus', function () {
+      getAll();
+    });
+    // return refresh;
+  }, []);
+
+  useEffect(() => {}, [userx]);
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#E5E5E5'}}>
       <StatusBar barStyle="light-content" backgroundColor="#33907C" />
       <View style={{height: '10%', backgroundColor: '#33907C', padding: 20}}>
-        <Text style={{fontSize: 25}}>Riwayat Penelusuran</Text>
+        <Text style={{fontSize: 25, color: 'white'}}>Riwayat Penelusuran</Text>
       </View>
       <View style={{backgroundColor: '#E5E5E5', flex: 1}}>
         <View
@@ -69,7 +108,7 @@ const OrderHistory = () => {
           <Text style={{color: 'black', marginRight: 60, fontSize: 23}}>
             Riwayat
           </Text>
-          <Text
+          {/* <Text
             style={{
               color: '#33907C',
               backgroundColor: '#E6ECF0',
@@ -80,54 +119,20 @@ const OrderHistory = () => {
               textAlign: 'center',
             }}>
             Januari 2022
-          </Text>
+          </Text> */}
         </View>
-        <ScrollView>
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
+        <ScrollView style={{paddingHorizontal: 15}}>
+          {history.map(val => {
+            return (
+              <Card
+                key={val.id}
+                toko={val?.stores?.store_name}
+                id={val?.stores?.id}
+              />
+            );
+          })}
         </ScrollView>
       </View>
-      {/* <View style={styles.navBottom}>
-        <IconNav
-          url={require('../../assets/Icon/home.png')}
-          teks="Home"
-          warna={'#4f4f4f'}
-          linkk={() => alert('Home')}
-        />
-        <IconNav
-          url={require('../../assets/Icon/search.png')}
-          teks="Jelajahi"
-          warna={'#4f4f4f'}
-          linkk={() => alert('Jelajahi')}
-        />
-        <IconNav
-          url={require('../../assets/Icon/store.png')}
-          teks="Store"
-          warna={'#4f4f4f'}
-          linkk={() => alert('Jelajahi')}
-        />
-        <IconNav
-          url={require('../../assets/Icon/order-active.png')}
-          teks="History"
-          warna={'#33907C'}
-          linkk={() => alert('History')}
-        />
-        <IconNav
-          url={require('../../assets/Icon/profile.png')}
-          teks="Profil"
-          warna={'#4f4f4f'}
-          linkk={() => alert('Profile')}
-        />
-      </View> */}
     </SafeAreaView>
   );
 };

@@ -12,17 +12,19 @@ import {
 
 import {useNavigation} from '@react-navigation/native';
 
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import map from '../../assets/Icon/Maps.png';
 import ButtonGreen from '../../components/button-green';
 import IconNav from '../../components/icon-navbar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {doLogoutUser} from '../../redux/actions';
+import {doLogoutUser, getDetailUser} from '../../redux/actions';
 
 const Profile = () => {
-  const infodataUser = useSelector(state => state.userReducer);
   const nav = useNavigation();
+  const dispatch = useDispatch();
+  const [render, setRender] = useState(true);
+  const dataUser = useSelector(state => state.userReducer.detailUser);
   const [alamat, setAlamat] = useState('');
   const [userx, setUserx] = useState({
     id: 0,
@@ -33,6 +35,7 @@ const Profile = () => {
     status: '',
     token: '',
   });
+
   const getAll = async () => {
     await AsyncStorage.getItem('dataLogin', (error, result) => {
       if (result) {
@@ -46,6 +49,7 @@ const Profile = () => {
           status: data.status,
           token: data.token,
         });
+        dispatch(getDetailUser(data.id, data.token));
       }
     });
     const Addrs = await AsyncStorage.getItem('currentAddress');
@@ -54,13 +58,11 @@ const Profile = () => {
 
   useEffect(() => {
     getAll();
-    // console.log(userx);
   }, []);
 
   useEffect(() => {
     // console.log(userx);
   }, [userx]);
-
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#E5E5E5'}}>
       <StatusBar barStyle="light-content" backgroundColor="#33907C" />
@@ -127,9 +129,15 @@ const Profile = () => {
             height: 110,
             width: 110,
             borderRadius: 100,
-            backgroundColor: 'black',
+            backgroundColor: '#33907C',
             marginRight: 20,
-          }}></View>
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text style={{fontSize: 80, color: 'white'}}>
+            {dataUser ? dataUser.name?.charAt(0) : null}
+          </Text>
+        </View>
         <View style={{width: '50%'}}>
           <Text
             style={{
@@ -137,11 +145,13 @@ const Profile = () => {
               fontWeight: 'bold',
               fontSize: 20,
             }}>
-            {userx?.name}
+            {dataUser ? dataUser.name : null}
           </Text>
-          <Text style={{color: 'black'}}>{userx?.phone}</Text>
+          <Text style={{color: 'black'}}>
+            {dataUser ? dataUser.phone : null}
+          </Text>
           <Text numberOfLines={1} ellipsizeMode="tail" style={{color: 'black'}}>
-            {userx?.email}
+            {dataUser ? dataUser.email : null}
           </Text>
         </View>
       </View>

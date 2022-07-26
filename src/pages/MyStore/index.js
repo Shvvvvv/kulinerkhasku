@@ -20,46 +20,82 @@ import edit from '../../assets/Icon/Edit.png';
 import trash from '../../assets/Icon/trash.png';
 import close from '../../assets/Icon/Close.png';
 import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useState} from 'react';
+import {dispatch} from 'rxjs/internal/observable/range';
+import {useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {getAllProducts} from '../../redux/actions';
 
-const MyStore = () => {
-  const nav = useNavigation();
-  const Card = props => {
-    return (
-      <View
+const dataDummy = [
+  {
+    id: 1,
+    nama: 'Cilok',
+    harga: 10000,
+    picture:
+      'https://cdn0-production-images-kly.akamaized.net/j50PAqiQ_jbWKwDTqJWoJoZ0HeI=/0x284:903x793/1200x675/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3384331/original/092840500_1614053572-shutterstock_1791558536.jpg',
+  },
+  {
+    id: 2,
+    nama: 'Combro',
+    harga: 5000,
+    picture:
+      'https://cdn-cas.orami.co.id/parenting/images/Combro_pergikuliner.com.width-800.jpg',
+  },
+  {
+    id: 3,
+    nama: 'Cireng',
+    harga: 3000,
+    picture:
+      'https://cdn-cas.orami.co.id/parenting/images/Cireng_pikiran-rakyat.com.width-800.jpg',
+  },
+  {
+    id: 4,
+    nama: 'Cimol',
+    harga: 5000,
+    picture:
+      'https://cdn-cas.orami.co.id/parenting/images/Cimol_asianfoodnetwoek.com.width-800.jpg',
+  },
+];
+
+const Card = props => {
+  return (
+    <View
+      style={{
+        width: 170,
+        height: 210,
+        backgroundColor: 'white',
+        borderRadius: 13,
+        marginBottom: 15,
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 3,
+        },
+        shadowOpacity: 0.27,
+        shadowRadius: 4.65,
+
+        elevation: 6,
+      }}>
+      <ImageBackground
+        source={{uri: props.picture}}
         style={{
-          width: 170,
-          height: 210,
-          backgroundColor: 'white',
-          borderRadius: 13,
-          marginBottom: 15,
-          shadowColor: '#000',
-          shadowOffset: {
-            width: 0,
-            height: 3,
-          },
-          shadowOpacity: 0.27,
-          shadowRadius: 4.65,
-
-          elevation: 6,
+          height: 135,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        imageStyle={{
+          height: 135,
+          borderTopLeftRadius: 13,
+          borderTopRightRadius: 13,
         }}>
-        <ImageBackground
-          source={cilok}
+        <View
           style={{
-            height: 135,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-          imageStyle={{
-            height: 135,
-            borderTopLeftRadius: 13,
-            borderTopRightRadius: 13,
+            flexDirection: 'row',
+            width: '65%',
+            justifyContent: 'space-between',
           }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              width: '65%',
-              justifyContent: 'space-between',
-            }}>
+          <TouchableOpacity onPress={() => nav.navigate('EditProduct')}>
             <View
               style={{
                 backgroundColor: '#FFFFFF66',
@@ -71,6 +107,8 @@ const MyStore = () => {
               }}>
               <Image source={edit} style={{height: 30, width: 30}} />
             </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
             <View
               style={{
                 backgroundColor: '#FFFFFF66',
@@ -82,27 +120,60 @@ const MyStore = () => {
               }}>
               <Image source={trash} style={{height: 18, width: 18}} />
             </View>
-          </View>
-        </ImageBackground>
-        <View style={{padding: 10}}>
-          <Text style={{marginBottom: 10, color: 'black'}}>Cilok</Text>
-          <Text style={{color: 'black'}}>Rp 12.000,-</Text>
+          </TouchableOpacity>
         </View>
+      </ImageBackground>
+      <View style={{padding: 10}}>
+        <Text style={{marginBottom: 10, color: 'black'}}>{props.nama}</Text>
+        <Text style={{color: 'black'}}>
+          {'Rp' +
+            props.harga.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1.')}
+        </Text>
       </View>
-    );
-  };
-  const ButtonW = props => {
-    return (
-      <SafeAreaView>
-        <TouchableOpacity>
-          <View style={[styles.button, {height: props.p, width: props.l}]}>
-            <Text style={styles.tex}>{props.judul}</Text>
-          </View>
-        </TouchableOpacity>
-      </SafeAreaView>
-    );
+    </View>
+  );
+};
+
+const ButtonW = props => {
+  return (
+    <SafeAreaView>
+      <TouchableOpacity onPress={props.link}>
+        <View style={[styles.button, {height: props.p, width: props.l}]}>
+          <Text style={styles.tex}>{props.judul}</Text>
+        </View>
+      </TouchableOpacity>
+    </SafeAreaView>
+  );
+};
+
+const MyStore = () => {
+  const nav = useNavigation();
+  const dispatch = useDispatch();
+  const [userx, setUserx] = useState('');
+  const products = useSelector(state => state.productReducer.listProduct);
+
+  const getAll = async () => {
+    await AsyncStorage.getItem('dataLogin', (error, result) => {
+      if (result) {
+        let data = JSON.parse(result);
+        console.log(data.store.stores.store_name);
+        setUserx({
+          id: data.id,
+          token: data.token,
+          namaToko: data.store.stores.store_name,
+          idToko: data.store.stores.id,
+        });
+        // console.log(data.store.stores.id);
+        dispatch(getAllProducts());
+      }
+    });
   };
 
+  useEffect(() => {
+    getAll();
+  }, []);
+
+  useEffect(() => {}, [userx]);
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#E5E5E5'}}>
       <View
@@ -136,7 +207,7 @@ const MyStore = () => {
               fontWeight: 'bold',
               marginBottom: 10,
             }}>
-            Toko Khas Ku
+            {userx.namaToko}
           </Text>
           <View
             style={{
@@ -145,23 +216,20 @@ const MyStore = () => {
               width: 230,
               marginBottom: 23,
             }}>
-            <ButtonW judul="Edit toko" l={105} p={25} />
-            <ButtonGreen judul="Lihat info" l={105} p={25} />
+            <ButtonW
+              judul="Edit toko"
+              l={105}
+              p={25}
+              link={() => nav.navigate('EditStore')}
+            />
+            <ButtonGreen
+              judul="Lihat info"
+              l={105}
+              p={25}
+              submitting={false}
+              link={() => nav.navigate('InfoToko')}
+            />
           </View>
-          <TouchableOpacity>
-            <View
-              style={{
-                borderTopWidth: 1,
-                borderColor: '#CCC',
-                height: 35,
-                width: lebar,
-                justifyContent: 'center',
-              }}>
-              <Text style={{textAlign: 'center', color: '#AAA'}}>
-                Hapus toko
-              </Text>
-            </View>
-          </TouchableOpacity>
         </View>
         <View
           style={{
@@ -201,7 +269,7 @@ const MyStore = () => {
                     alignItems: 'center',
                     marginBottom: 15,
                   }}>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={() => nav.navigate('AddProduct')}>
                     <Image
                       source={close}
                       style={{
@@ -215,55 +283,23 @@ const MyStore = () => {
                     </Text>
                   </TouchableOpacity>
                 </View>
-                <Card />
-                <Card />
+                {products.map(val => {
+                  return (
+                    val.store_id == userx.idToko && (
+                      <Card
+                        key={val.id}
+                        nama={val.product_name}
+                        harga={val.price}
+                        picture={val.picture}
+                      />
+                    )
+                  );
+                })}
               </View>
             </ScrollView>
           </View>
         </View>
       </View>
-      {/* <View style={styles.navBottom}>
-        <IconNav
-          url={require('../../assets/Icon/home.png')}
-          teks="Home"
-          warna={'#4f4f4f'}
-          linkk={() => {
-            nav.navigate('HomeDashboard');
-          }}
-        />
-        <IconNav
-          url={require('../../assets/Icon/search.png')}
-          teks="Jelajahi"
-          warna={'#4f4f4f'}
-          linkk={() => {
-            nav.navigate('HasilPencarian');
-          }}
-        />
-        <IconNav
-          url={require('../../assets/Icon/store-active.png')}
-          teks="Store"
-          warna={'#33907C'}
-          linkk={() => {
-            nav.navigate('MyStore');
-          }}
-        />
-        <IconNav
-          url={require('../../assets/Icon/order.png')}
-          teks="History"
-          warna={'#4f4f4f'}
-          linkk={() => {
-            nav.navigate('OrderHistory');
-          }}
-        />
-        <IconNav
-          url={require('../../assets/Icon/profile.png')}
-          teks="Profil"
-          warna={'#4f4f4f'}
-          linkk={() => {
-            nav.navigate('Profile');
-          }}
-        />
-      </View> */}
     </SafeAreaView>
   );
 };

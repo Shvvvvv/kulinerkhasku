@@ -4,6 +4,7 @@ import {Easing, Notifier, NotifierComponents} from 'react-native-notifier';
 import axios from 'axios';
 
 import {API_KULINER} from '../../config';
+import {dispatch} from 'rxjs/internal/observable/pairs';
 
 //USER
 export const signUpUser = param => dispatch => {
@@ -45,7 +46,6 @@ export const loginUser = param => dispatch => {
         });
         dispatch({type: 'SUCCES_LOGIN', payload: result.data.data});
         const jsonValue = JSON.stringify(result.data.data);
-        console.log(jsonValue);
         await AsyncStorage.setItem('dataLogin', jsonValue);
       } else {
         Notifier.showNotification({
@@ -69,17 +69,6 @@ export const loginUser = param => dispatch => {
     });
 };
 
-// export const reloginUser = param => dispatch => {
-//   axios
-//     .post(API_KULINER + 'api/user/login', param)
-//     .then(async result => {
-//       dispatch({type: 'SUCCES_LOGIN', payload: result.data});
-//     })
-//     .catch(error => {
-//       console.log(error);
-//     });
-// };
-
 export const doLogoutUser = (token, nav) => {
   axios
     .get(API_KULINER + 'api/user/logout', {
@@ -92,7 +81,7 @@ export const doLogoutUser = (token, nav) => {
       nav.replace('Login');
     })
     .catch(error => {
-      console.log('');
+      console.log(error);
     });
 };
 
@@ -111,12 +100,80 @@ export const getAllUser = token => dispatch => {
     });
 };
 
+export const updateUser = (param, id, token, nav) => dispatch => {
+  axios
+    .put(API_KULINER + 'api/user/update/' + id, param, {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    })
+    .then(result => {
+      AsyncStorage.getItem('dataLogin', (error, result) => {
+        if (result) {
+          var data = JSON.parse(result);
+          data.name = param.name;
+          data.phone = param.phone;
+        }
+        AsyncStorage.mergeItem('dataLogin', JSON.stringify(data));
+        dispatch({type: 'GET_DETAIL_USER', payload: data});
+      });
+      Notifier.showNotification({
+        title: 'Update',
+        description: result.data.message,
+        duration: 3000,
+        showAnimationDuration: 800,
+        hideAnimationDuration: 800,
+        animationDuration: 800,
+        showEasing: Easing.in,
+        Component: NotifierComponents.Alert,
+        componentProps: {
+          alertType: 'success',
+        },
+      });
+      nav.navigate('Profile');
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
+
+export const getDetailUser = (id, token) => dispatch => {
+  axios
+    .get(API_KULINER + 'api/user/' + id, {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    })
+    .then(result => {
+      dispatch({type: 'GET_DETAIL_USER', payload: result.data.data});
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
+export const getHistoryByID = (id, token) => dispatch => {
+  axios
+    .get(API_KULINER + 'api/history/user/' + id, {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    })
+    .then(result => {
+      dispatch({type: 'GET_HISTORY_USER', payload: result.data.data});
+    })
+    .catch(err => {
+      console.log('geHistoryById');
+      console.log(err);
+    });
+};
+
 //PRODUCT
 export const getAllProducts = setLoad => dispatch => {
   axios
     .get(API_KULINER + 'api/product')
     .then(result => {
-      setLoad(false);
+      // setLoad(false);
       dispatch({type: 'GET_ALL_PRODUCTS', payload: result.data.data});
     })
     .catch(error => {
@@ -148,11 +205,49 @@ export const getStoreById = (id, token) => dispatch => {
         Authorization: 'Bearer ' + token,
       },
     })
-    .then(async result => {
+    .then(result => {
       dispatch({type: 'GET_STORE_BY_ID', payload: result.data.data});
-      await AsyncStorage.mergeItem('store', JSON.stringify(result.data.data));
     })
     .catch(error => {
+      console.log('getStoreByID');
+      console.log(error);
+    });
+};
+
+export const updateStore = (param, token, nav) => dispatch => {
+  axios
+    .post(API_KULINER + 'api/store', param, {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    })
+    .then(result => {
+      AsyncStorage.getItem('dataLogin', (error, result) => {
+        if (result) {
+          var data = JSON.parse(result);
+          data.name = param.name;
+          data.phone = param.phone;
+        }
+        AsyncStorage.mergeItem('dataLogin', JSON.stringify(data));
+        dispatch({type: 'GET_DETAIL_USER', payload: data});
+      });
+      Notifier.showNotification({
+        title: 'Update',
+        description: result.data.message,
+        duration: 3000,
+        showAnimationDuration: 800,
+        hideAnimationDuration: 800,
+        animationDuration: 800,
+        showEasing: Easing.in,
+        Component: NotifierComponents.Alert,
+        componentProps: {
+          alertType: 'success',
+        },
+      });
+      nav.navigate('Profile');
+    })
+    .catch(error => {
+      console.log('getStoreByID');
       console.log(error);
     });
 };
@@ -212,5 +307,20 @@ export const createReview = (param, token) => dispatch => {
     })
     .catch(error => {
       console.log(error);
+    });
+};
+
+export const createView = (param, token) => dispatch => {
+  axios
+    .post(API_KULINER + 'api/history/view', param, {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    })
+    .then(result => {
+      console.log(result.data.message);
+    })
+    .catch(err => {
+      console.log(err);
     });
 };

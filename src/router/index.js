@@ -34,9 +34,85 @@ import Profile from '../pages/Profile';
 import LanjutDaftarToko from '../pages/SignupToko/lanjut';
 import InfoToko from '../pages/InfoToko';
 import ForgotPassword from '../pages/ForgotPassword';
+import EditProduct from '../pages/EditProduct';
+import EditStore from '../pages/EditStore';
 
 const Stack = createStackNavigator();
+const ProfileStack = createStackNavigator();
+const HistoryStack = createStackNavigator();
+const HomeStack = createStackNavigator();
+const ProductStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+
+function ProfileStackScreen() {
+  return (
+    <ProfileStack.Navigator>
+      <ProfileStack.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ProfileStack.Screen
+        name="EditProfile"
+        component={EditProfile}
+        options={{
+          headerShown: false,
+        }}
+      />
+    </ProfileStack.Navigator>
+  );
+}
+
+function HistoryStackScreen() {
+  return (
+    <HistoryStack.Navigator>
+      <HistoryStack.Screen
+        name="OrderHistory"
+        component={OrderHistory}
+        options={{
+          headerShown: false,
+        }}
+      />
+    </HistoryStack.Navigator>
+  );
+}
+
+function ProductStackScreen() {
+  return (
+    <ProductStack.Navigator>
+      <ProductStack.Screen
+        name="ListProduct"
+        component={ListProduct}
+        options={{
+          headerShown: false,
+        }}
+      />
+    </ProductStack.Navigator>
+  );
+}
+
+function HomeStackScreen() {
+  return (
+    <HomeStack.Navigator>
+      <HomeStack.Screen
+        name="HomeDashboard"
+        component={HomeDashboard}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <HomeStack.Screen
+        name="HasilPencarian"
+        component={HasilPencarian}
+        options={{
+          headerShown: false,
+        }}
+      />
+    </HomeStack.Navigator>
+  );
+}
 
 const HomeTab = () => {
   const dispatch = useDispatch();
@@ -99,7 +175,7 @@ const HomeTab = () => {
   const history = userx?.role === 'Pengunjung' && (
     <Tab.Screen
       name="History"
-      component={OrderHistory}
+      component={HistoryStackScreen}
       options={{
         tabBarIcon: ({color, size}) => (
           <Fontawe5 name="clipboard-list" color={color} size={size} />
@@ -117,7 +193,7 @@ const HomeTab = () => {
       }}>
       <Tab.Screen
         name="Home"
-        component={HomeDashboard}
+        component={HomeStackScreen}
         options={{
           tabBarIcon: ({color, size}) => (
             <Fontawe5 name="home" color={color} size={size} />
@@ -126,7 +202,7 @@ const HomeTab = () => {
       />
       <Tab.Screen
         name={userx?.role === 'Pengunjung' ? 'Product' : 'Store'}
-        component={userx?.role === 'Pengunjung' ? ListProduct : MyStore}
+        component={userx?.role === 'Pengunjung' ? ProductStackScreen : MyStore}
         options={{
           tabBarIcon: ({color, size}) => (
             <Fontawe5 name="store" color={color} size={size} />
@@ -136,7 +212,7 @@ const HomeTab = () => {
       {history}
       <Tab.Screen
         name="Profil"
-        component={Profile}
+        component={ProfileStackScreen}
         options={{
           tabBarIcon: ({color, size}) => (
             <Fontawe5 name="user-alt" color={color} size={size} />
@@ -200,43 +276,8 @@ const Router = () => {
         }}
       />
       <Stack.Screen
-        name="Produk"
-        component={Produk}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="HasilPencarian"
-        component={HasilPencarian}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="DetailProduk"
-        component={DetailProduk}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="ListProductByToko"
-        component={ListProductByToko}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
         name="LanjutDaftarToko"
         component={LanjutDaftarToko}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="OrderHistory"
-        component={OrderHistory}
         options={{
           headerShown: false,
         }}
@@ -263,34 +304,6 @@ const Router = () => {
         }}
       />
       <Stack.Screen
-        name="MyStoreNothingProduct"
-        component={MyStoreNothingProduct}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="EditProfile"
-        component={EditProfile}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="ListProduct"
-        component={ListProduct}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
         name="InfoToko"
         component={InfoToko}
         options={{
@@ -298,8 +311,43 @@ const Router = () => {
         }}
       />
       <Stack.Screen
+        name="MyStoreNothingProduct"
+        component={MyStoreNothingProduct}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
         name="ForgotPassword"
         component={ForgotPassword}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="EditProduct"
+        component={EditProduct}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="EditStore"
+        component={EditStore}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ListProductByToko"
+        component={ListProductByToko}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="DetailProduk"
+        component={DetailProduk}
         options={{
           headerShown: false,
         }}

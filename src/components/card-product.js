@@ -27,7 +27,11 @@ const CardProduct = props => {
             <Text style={{color: '#4A4A4A'}}>{props.produkNama}</Text>
           </View>
           <View style={{alignItems: 'flex-end'}}>
-            <Text style={{color: '#33907C'}}>{props.produkHarga}</Text>
+            <Text style={{color: '#33907C'}}>
+              {props.produkHarga
+                .toString()
+                .replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1.')}
+            </Text>
           </View>
         </View>
       </View>

@@ -9,12 +9,15 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {tinggi, lebar} from '../../assets/style/Style';
 import kembali from '../../assets/Icon/Back.png';
 import ButtonGreen from '../../components/button-green';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
+import {useDispatch} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {updateUser} from '../../redux/actions';
 
 const validationSchema = Yup.object({
   nama: Yup.string()
@@ -22,39 +25,42 @@ const validationSchema = Yup.object({
     .min(3, 'Miminal harus 3 karakter!')
     .required('Nama tidak boleh kosong!'),
   noHp: Yup.string().required('No Handphone Tidak Boleh Kosong!'),
-  alamat: Yup.string()
-    .trim()
-    .min(3, 'Miminal harus 3 karakter!')
-    .required('Nama tidak boleh kosong!'),
-  kota: Yup.string()
-    .trim()
-    .min(3, 'Miminal harus 3 karakter!')
-    .required('Nama tidak boleh kosong!'),
-  negara: Yup.string()
-    .trim()
-    .min(3, 'Miminal harus 3 karakter!')
-    .required('Nama tidak boleh kosong!'),
-  kodePos: Yup.string()
-    .trim()
-    .min(3, 'Miminal harus 3 karakter!')
-    .max(5, 'Maksimal harus 5 karakter!')
-    .required('Nama tidak boleh kosong!'),
 });
 
 const EditProfile = ({navigation}) => {
+  const dispatch = useDispatch();
+  const [userx, setUserx] = useState('');
   const inputan = {
     nama: '',
     noHp: '',
-    alamat: '',
-    kota: '',
-    negara: '',
-    kodePos: '',
   };
 
-  // const onSubmit = (val) => {
-  //   dispatch(updateUser(val));
-  // };
+  const onSubmit = async val => {
+    let param = {
+      name: val.nama,
+      email: userx.email,
+      password: '',
+      phone: val.noHp,
+    };
+    await dispatch(updateUser(param, userx.id, userx.token, navigation));
+  };
 
+  const getAll = async () => {
+    await AsyncStorage.getItem('dataLogin', (error, result) => {
+      if (result) {
+        let data = JSON.parse(result);
+        setUserx({
+          id: data.id,
+          token: data.token,
+          email: data.email,
+        });
+      }
+    });
+  };
+
+  useEffect(() => {
+    getAll();
+  }, []);
   return (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="light-content" backgroundColor="#33907C" />
@@ -65,7 +71,7 @@ const EditProfile = ({navigation}) => {
           setTimeout(() => {
             formikAction.resetForm();
             formikAction.setSubmitting(false);
-            // onSubmit(values);
+            onSubmit(values);
           }, 2000);
         }}>
         {({
@@ -77,7 +83,7 @@ const EditProfile = ({navigation}) => {
           handleBlur,
           handleSubmit,
         }) => {
-          const {nama, noHp, alamat, kota, negara, kodePos} = values;
+          const {nama, noHp} = values;
           return (
             <>
               <View style={{flex: 1}}>
@@ -102,7 +108,7 @@ const EditProfile = ({navigation}) => {
                       fontSize: 20,
                       left: lebar / 6.5,
                     }}>
-                    Ubah alamat baru anda
+                    Ubah profil baru anda
                   </Text>
                 </View>
                 <ScrollView
@@ -125,34 +131,6 @@ const EditProfile = ({navigation}) => {
                     onBlur={handleBlur('noHp')}
                     value={noHp}
                     onChangeText={handleChange('noHp')}
-                  />
-                  <Text style={styles().teks}>Alamat</Text>
-                  <TextInput
-                    style={styles(touched.alamat && errors.alamat).inputan}
-                    onBlur={handleBlur('alamat')}
-                    value={alamat}
-                    onChangeText={handleChange('alamat')}
-                  />
-                  <Text style={styles().teks}>Kota</Text>
-                  <TextInput
-                    style={styles(touched.kota && errors.kota).inputan}
-                    onBlur={handleBlur('kota')}
-                    value={kota}
-                    onChangeText={handleChange('kota')}
-                  />
-                  <Text style={styles().teks}>Negara</Text>
-                  <TextInput
-                    style={styles(touched.negara && errors.negara).inputan}
-                    onBlur={handleBlur('negara')}
-                    value={negara}
-                    onChangeText={handleChange('negara')}
-                  />
-                  <Text style={styles().teks}>Kode Pos</Text>
-                  <TextInput
-                    style={styles(touched.kodePos && errors.kodePos).inputan}
-                    onBlur={handleBlur('kodePos')}
-                    value={kodePos}
-                    onChangeText={handleChange('kodePos')}
                   />
                 </ScrollView>
                 <View

@@ -31,7 +31,7 @@ import {getAllProducts} from '../../redux/actions';
 import {getProductById, getStoreById} from '../../redux/actions/authAction';
 
 const HomeDashboard = ({navigation}) => {
-  const [load, setLoad] = useState(true);
+  const [load, setLoad] = useState(false);
   const [userx, setUserx] = useState({
     id: 0,
     name: '',
@@ -56,6 +56,7 @@ const HomeDashboard = ({navigation}) => {
     await AsyncStorage.getItem('dataLogin', (error, result) => {
       if (result) {
         let data = JSON.parse(result);
+        console.log(data);
         setUserx({
           id: data.id,
           name: data.name,

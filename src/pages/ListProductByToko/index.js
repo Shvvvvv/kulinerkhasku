@@ -23,10 +23,12 @@ import {useDispatch, useSelector} from 'react-redux';
 // import {} from 'react-native-gesture-handler';
 import kembali from '../../assets/Icon/Back.png';
 import cilok from '../../assets/image/cilok.jpg';
+import {tinggi} from '../../assets/style/Style';
 import ButtonGreen from '../../components/button-green';
 import CardProduct from '../../components/card-product';
 import {
   createReview,
+  createView,
   getAllProducts,
   getAllRating,
   getAllUser,
@@ -35,7 +37,10 @@ import {
   getTopRating,
 } from '../../redux/actions';
 
-const ListProductByToko = () => {
+const ListProductByToko = ({route}) => {
+  if (route.params) {
+    var {idToko} = route.params;
+  }
   const [load, setLoad] = useState(true);
   const [comment, setComment] = useState('');
   const [rate, setRate] = useState(0);
@@ -72,6 +77,8 @@ const ListProductByToko = () => {
         dispatch(getAllRating(data.token));
         dispatch(getAllUser(data.token));
         dispatch(getTopRating(data.token));
+        dispatch(getStoreById(idToko, data.token));
+        dispatch(createView({store_id: idToko, user_id: data.id}, data.token));
       }
     });
   };
@@ -91,7 +98,7 @@ const ListProductByToko = () => {
       createReview(
         {
           rating: rate,
-          store_id: store.id,
+          store_id: idToko,
           user_id: userx.id,
           reviews: comment,
         },
@@ -100,6 +107,7 @@ const ListProductByToko = () => {
     );
     setComment('');
     await dispatch(getAllRating(userx.token));
+    await dispatch(getTopRating(userx.token));
   };
 
   useEffect(() => {
@@ -108,9 +116,10 @@ const ListProductByToko = () => {
       await dispatch(getAllProducts(setLoad));
     }
     get();
+    console.log('test');
   }, []);
 
-  useEffect(() => {}, [comment]);
+  useEffect(() => {}, [allRating, topRating]);
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -122,7 +131,9 @@ const ListProductByToko = () => {
       <ScrollView>
         <View style={styles.mainContainer}>
           <ImageBackground
-            source={{uri: store.picture1}}
+            source={{
+              uri: store?.picture1,
+            }}
             style={styles.imageCover}>
             <TouchableOpacity style={styles.buttonKembali}>
               <View>
@@ -181,7 +192,7 @@ const ListProductByToko = () => {
             <Text style={{fontSize: 16, color: 'white'}}>Rating Toko</Text>
             <Text style={{fontSize: 16, color: 'gold'}}>
               {topRating.map(val => {
-                if (val.store_id === store.id) {
+                if (val.store_id == store.id) {
                   return val.rating;
                 }
               })}
@@ -205,7 +216,7 @@ const ListProductByToko = () => {
           <View style={styles.containerProduk}>
             {allProduct.map(val => {
               return (
-                val.store_id === store.id && (
+                val.store_id == store.id && (
                   <CardProduct
                     key={val.id}
                     produkNama={val.product_name}
@@ -285,7 +296,7 @@ const ListProductByToko = () => {
             }}>
             {allRating.map(val => {
               return (
-                val.store_id === store.id && (
+                val.store_id == store.id && (
                   <View
                     key={val.id}
                     style={{
@@ -301,7 +312,7 @@ const ListProductByToko = () => {
                         marginBottom: 3,
                       }}>
                       {allUser.map(valUser => {
-                        if (valUser.id === val.user_id) {
+                        if (valUser.id == val.user_id) {
                           return valUser.name;
                         }
                       })}

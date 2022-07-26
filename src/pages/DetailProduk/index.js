@@ -108,7 +108,10 @@ const DetailProduk = ({navigation}) => {
             l={110}
             judul="Kunjungi"
             submitting={false}
-            link={() => navigation.navigate('ListProductByToko')}
+            link={() =>
+              
+              navigation.navigate('ListProductByToko', {idToko: toko.id})
+            }
           />
         </View>
         <View style={styles.containerDeskripsi}>
