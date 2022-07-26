@@ -200,7 +200,7 @@ export const getProductById = (id, token) => dispatch => {
 export const createProduct = (param, token, nav) => dispatch => {
   const formData = new FormData();
   formData.append('param', JSON.stringify(param));
-  formData.append()
+  formData.append();
   axios
     .post(API_KULINER + 'api/product', param, {
       headers: {

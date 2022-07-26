@@ -4,8 +4,10 @@ import {set} from 'immer/dist/internal';
 import React, {useEffect, useState} from 'react';
 
 import {
+  Button,
   Image,
   ImageBackground,
+  Modal,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -15,6 +17,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {TouchableHighlight} from 'react-native-gesture-handler';
 import {Rating, AirbnbRating} from 'react-native-ratings';
 
 import FontAwe5 from 'react-native-vector-icons/Ionicons';
@@ -23,7 +26,7 @@ import {useDispatch, useSelector} from 'react-redux';
 // import {} from 'react-native-gesture-handler';
 import kembali from '../../assets/Icon/Back.png';
 import cilok from '../../assets/image/cilok.jpg';
-import {tinggi} from '../../assets/style/Style';
+import {lebar, tinggi} from '../../assets/style/Style';
 import ButtonGreen from '../../components/button-green';
 import CardProduct from '../../components/card-product';
 import {
@@ -41,6 +44,7 @@ const ListProductByToko = ({route}) => {
   if (route.params) {
     var {idToko} = route.params;
   }
+  const [show, setShow] = useState(false);
   const [load, setLoad] = useState(true);
   const [comment, setComment] = useState('');
   const [rate, setRate] = useState(0);
@@ -135,7 +139,9 @@ const ListProductByToko = ({route}) => {
               uri: store?.picture1,
             }}
             style={styles.imageCover}>
-            <TouchableOpacity style={styles.buttonKembali}>
+            <TouchableOpacity
+              style={styles.buttonKembali}
+              onPress={() => nav.goBack()}>
               <View>
                 <Image source={kembali} style={{height: 30, width: 30}} />
               </View>
@@ -149,7 +155,7 @@ const ListProductByToko = ({route}) => {
               backgroundColor: '#33907C',
               justifyContent: 'center',
             }}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => setShow(!show)}>
               <View style={styles.containerAlamat}>
                 <Text
                   style={{
@@ -336,6 +342,72 @@ const ListProductByToko = ({route}) => {
           </View>
         </ScrollView>
       </ScrollView>
+      <Modal
+        transparent
+        visible={show}
+        statusBarTranslucent={true}
+        animationType="slide">
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: '#00000050',
+            justifyContent: 'flex-end',
+          }}>
+          <View
+            style={{
+              width: lebar,
+              height: tinggi / 1.1,
+              backgroundColor: 'white',
+              borderTopLeftRadius: 12,
+              borderTopRightRadius: 12,
+            }}>
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: 60,
+                position: 'relative',
+              }}>
+              <Text style={{color: 'black', fontWeight: 'bold', fontSize: 22}}>
+                Lokasi toko
+              </Text>
+              <View style={{position: 'absolute', right: 15}}>
+                {/* <TouchableOpacity onPress={toggleModal}>
+                  <Image source={close} style={{height: 24, width: 24}}></Image>
+                </TouchableOpacity> */}
+              </View>
+            </View>
+            <View
+              style={{
+                borderTopWidth: 1,
+                borderBottomWidth: 1,
+                borderColor: '#CBCBCC',
+                marginTop: 10,
+                paddingHorizontal: 10,
+                height: 50,
+              }}></View>
+            <View
+              style={{
+                padding: 20,
+                borderTopWidth: 1,
+                borderBottomWidth: 1,
+                borderColor: '#CBCBCC',
+              }}>
+              <View
+                style={{
+                  backgroundColor: 'gray',
+                  height: tinggi / 1.8,
+                  borderRadius: 10,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}></View>
+            </View>
+            <View style={{padding: 20, height: tinggi / 10, flex: 1}}>
+              <ButtonGreen judul="Kembali" p={40} link={() => setShow(!show)} />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
