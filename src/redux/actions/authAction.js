@@ -4,7 +4,6 @@ import {Easing, Notifier, NotifierComponents} from 'react-native-notifier';
 import axios from 'axios';
 
 import {API_KULINER} from '../../config';
-import {dispatch} from 'rxjs/internal/observable/pairs';
 
 //USER
 export const signUpUser = param => dispatch => {

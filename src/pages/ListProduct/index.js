@@ -101,7 +101,7 @@ const Produk = () => {
             }}
           />
         </View>
-        <View
+        {/* <View
           style={{
             flex: 1,
             flexDirection: 'row',
@@ -130,7 +130,7 @@ const Produk = () => {
             />
             <Text style={{color: 'white'}}>Kategori</Text>
           </View>
-        </View>
+        </View> */}
       </View>
       <ScrollView style={styles.konten}>
         <View

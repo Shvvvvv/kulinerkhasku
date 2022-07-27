@@ -35,8 +35,8 @@ const App = () => {
     };
   }, []);
 
+  setMaps();
   useEffect(() => {
-    // setMaps();
     setTimeout(() => {
       setIsLoading(false);
     }, 2000);
