@@ -78,12 +78,12 @@ const setMaps = () => {
         const currentLat = JSON.stringify(position.coords.latitude);
 
         //Setting Longitude state
-        setCurrentLongitude(currentLat);
+        setCurrentLongitude(currentLong);
         // console.log(currentLatitude);
         // await AsyncStorage.setItem('latitude', currentLat);
 
         //Setting Longitude state
-        setCurrentLatitude(currentLong);
+        setCurrentLatitude(currentLat);
         // console.log(currentLongitude);
         // await AsyncStorage.setItem('latitude', currentLong);
       },
@@ -134,8 +134,8 @@ const setMaps = () => {
         setCurrentLatitude(currentLat);
         // console.log('ini lat: ', currentLat);
 
-        await AsyncStorage.mergeItem('latitude', currentLatitude);
-        await AsyncStorage.mergeItem('longitude', currentLongitude);
+        await AsyncStorage.mergeItem('latitude', currentLat);
+        await AsyncStorage.mergeItem('longitude', currentLong);
         await AsyncStorage.mergeItem('currentAddress', address);
       },
       error => {

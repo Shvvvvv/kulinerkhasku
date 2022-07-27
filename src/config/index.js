@@ -2,6 +2,7 @@ export const API_KEY =
   'https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyAimZEgYaeI0fRa0XZTHoP-IyhpQ5r7CU8';
 
 export const API_KULINER = 'https://anonyproject.online/public/';
+export const GOOGLE_MAPS_APIKEY = 'AIzaSyDLgNPsDb1iKk09vm1qAhyJWpR03TZMbD0';
 // import React, {useEffect, useState} from 'react';
 
 // import {PermissionsAndroid, Platform} from 'react-native';

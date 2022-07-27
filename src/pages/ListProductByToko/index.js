@@ -1,6 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation} from '@react-navigation/native';
-import {set} from 'immer/dist/internal';
 import React, {useEffect, useState} from 'react';
 
 import {
@@ -17,11 +14,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {TouchableHighlight} from 'react-native-gesture-handler';
-import {Rating, AirbnbRating} from 'react-native-ratings';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
+import {TouchableHighlight} from 'react-native-gesture-handler';
+import MapView, {MarkerAnimated} from 'react-native-maps';
+import MapViewDirections from 'react-native-maps-directions';
+import {AirbnbRating, Rating} from 'react-native-ratings';
 import FontAwe5 from 'react-native-vector-icons/Ionicons';
+
 import {useDispatch, useSelector} from 'react-redux';
+
+import {set} from 'immer/dist/internal';
 
 // import {} from 'react-native-gesture-handler';
 import kembali from '../../assets/Icon/Back.png';
@@ -29,6 +33,7 @@ import cilok from '../../assets/image/cilok.jpg';
 import {lebar, tinggi} from '../../assets/style/Style';
 import ButtonGreen from '../../components/button-green';
 import CardProduct from '../../components/card-product';
+import {GOOGLE_MAPS_APIKEY} from '../../config';
 import {
   createReview,
   createView,
@@ -55,6 +60,12 @@ const ListProductByToko = ({route}) => {
   const allUser = useSelector(state => state.userReducer.allUser);
   const nav = useNavigation();
   const dispatch = useDispatch();
+  const [initRegion, setIniitRegion] = useState({
+    latitude: 0,
+    longitude: 0,
+    latitudeDelta: 0.012,
+    longitudeDelta: 0.012,
+  });
   const [userx, setUserx] = useState({
     id: 0,
     name: '',
@@ -66,6 +77,15 @@ const ListProductByToko = ({route}) => {
   });
 
   const getAll = async () => {
+    let lat = await AsyncStorage.getItem('latitude');
+    let long = await AsyncStorage.getItem('longitude');
+    console.log('lat nya ada ?', lat);
+    setIniitRegion({
+      latitude: Number(lat),
+      longitude: Number(long),
+      latitudeDelta: 0.012,
+      longitudeDelta: 0.012,
+    });
     await AsyncStorage.getItem('dataLogin', (error, result) => {
       if (result) {
         let data = JSON.parse(result);
@@ -175,9 +195,7 @@ const ListProductByToko = ({route}) => {
               justifyContent: 'center',
             }}>
             <Text style={{color: 'white', marginBottom: 5}}>Alamat: </Text>
-            <Text style={{color: 'white'}}>
-              Jl. Dakota No.111 Kel.Sukaraja Kec. Cicendo Kota Bandung
-            </Text>
+            <Text style={{color: 'white'}}>{store.address}</Text>
           </View>
         </View>
         <View
@@ -347,6 +365,7 @@ const ListProductByToko = ({route}) => {
         visible={show}
         statusBarTranslucent={true}
         animationType="slide">
+        {console.log('ini store', store)}
         <View
           style={{
             flex: 1,
@@ -400,7 +419,43 @@ const ListProductByToko = ({route}) => {
                   borderRadius: 10,
                   justifyContent: 'center',
                   alignItems: 'center',
-                }}></View>
+                }}>
+                <MapView initialRegion={initRegion} style={styles.map}>
+                  <MapViewDirections
+                    origin={{
+                      latitude: initRegion.latitude,
+                      longitude: initRegion.longitude,
+                    }}
+                    destination={{
+                      latitude: Number(store.latitude),
+                      longitude: Number(store.longitude),
+                    }}
+                    apikey={GOOGLE_MAPS_APIKEY}
+                    strokeWidth={3}
+                    strokeColor="#33907C"
+                  />
+                  <MarkerAnimated
+                    image={require('../../assets/logo/logoMap.png')}
+                    coordinate={{
+                      latitude: Number(store.latitude),
+                      longitude: Number(store.longitude),
+                    }}
+                    style={{width: 20, height: 20}}
+                    title="Lokasi toko"
+                    description={store.address}
+                  />
+                  <MarkerAnimated
+                    // image={require('../../assets/logo/logoMap.png')}
+                    coordinate={{
+                      latitude: initRegion.latitude,
+                      longitude: initRegion.longitude,
+                    }}
+                    style={{width: 20, height: 20}}
+                    title="Lokasi toko"
+                    description={store.address}
+                  />
+                </MapView>
+              </View>
             </View>
             <View style={{padding: 20, height: tinggi / 10, flex: 1}}>
               <ButtonGreen judul="Kembali" p={40} link={() => setShow(!show)} />
@@ -446,5 +501,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 10,
+  },
+  map: {
+    width: lebar / 1.1,
+    height: tinggi / 1.8,
   },
 });
