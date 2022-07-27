@@ -146,7 +146,7 @@ const ListProductByToko = ({route}) => {
   useEffect(() => {}, [allRating, topRating]);
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
       <StatusBar
         backgroundColor="transparent"
         translucent={true}
